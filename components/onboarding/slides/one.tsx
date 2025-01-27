@@ -1,4 +1,4 @@
-import { BackgroundImage, ScreenContainer } from "@/components/styles/onboarding.styles";
+import { Hero, BackgroundImage, ScreenContainer, imageMapping } from "@/components/styles/onboarding.styles";
 
 export default function One({
   image,
@@ -15,8 +15,8 @@ export default function One({
         source={require('@/assets/images/onboarding/top-shelf.svg')}
         contentFit="cover"
       />
-      {/* <Hero image={image as 'price-control-togles'} />
-      <Title title={title} />
+      <Hero source={imageMapping[image as 'price-control-togles']} contentFit="contain" />
+      {/* <Title title={title} />
       <Info description={description} /> */}
     </ScreenContainer>
   )

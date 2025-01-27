@@ -20,6 +20,15 @@ export const BackgroundImage = styled(Image)`
   margin-bottom: 278px;
 `
 
+export const Hero = styled(Image)`
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 300px;
+  top: 0;
+  z-index: 1;
+`
+
 const TitleContainer = styled(View)`
 
 `
