@@ -3,28 +3,35 @@ import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
+  useAnimatedReaction,
+  runOnJS,
 } from 'react-native-reanimated';
 import { slides } from '@/components/onboarding/slides';
 import { DotsContainer, Dot, FooterContainer, MutedActionButton, MutedActionButtonText, NextActionButton, NextActionButtonText, BackgroundContainer } from '../styles/onboarding.styles';
 import { useRouter } from 'expo-router';
 import { ActionButton, ActionButtonText } from '../styles/index.styles';
+import { useState } from 'react';
 
 const { width } = Dimensions.get('window');
 
 const SlideFooter = ({ currentSlide, scrollRef }: { currentSlide: number, scrollRef: React.RefObject<Animated.ScrollView> }) => {
   const router = useRouter();
 
+  const handleDotPress = (index: number) => {
+    scrollRef.current?.scrollTo({
+      x: index * width,
+      animated: true,
+    });
+  }
+
   const handleNext = () => {
     if (currentSlide < slides.length - 1) {
-      scrollRef.current?.scrollTo({
-        x: (currentSlide + 1) * width,
-        animated: true,
-      });
+      handleDotPress(currentSlide + 1);
     }
   };
 
   const handleSkip = () => {
-    router.replace('/(tabs)');
+    router.replace('/(auth)/signup');
   }
 
   return (
@@ -37,6 +44,9 @@ const SlideFooter = ({ currentSlide, scrollRef }: { currentSlide: number, scroll
           <Dot
             isActive={index === currentSlide}
             key={index}
+            onPress={() => {
+              handleDotPress(index);
+            }}
           />
         ))}
       </DotsContainer>
@@ -56,7 +66,7 @@ const GetStartedFooter = () => {
   return (
     <FooterContainer>
       <ActionButton onPress={handleGetStarted}>
-        <ActionButtonText>Get Started</ActionButtonText>
+        <ActionButtonText>Create Account</ActionButtonText>
       </ActionButton>
     </FooterContainer>
   );
@@ -66,6 +76,14 @@ export default function SlideScreen() {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const x = useSharedValue(0);
   const currentSlide = useSharedValue(0);
+  const [slideIndex, setSlideIndex] = useState(0);
+
+  useAnimatedReaction(
+    () => currentSlide.value,
+    (value) => {
+      runOnJS(setSlideIndex)(value);
+    }
+  );
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -73,8 +91,6 @@ export default function SlideScreen() {
       currentSlide.value = Math.round(event.contentOffset.x / width);
     },
   });
-
-  console.log(currentSlide.value, ' currentSlide');
 
   return (
     <BackgroundContainer>
@@ -91,7 +107,11 @@ export default function SlideScreen() {
           </View>
         ))}
       </Animated.ScrollView>
-      {currentSlide.value === slides.length - 1 ? <GetStartedFooter /> : <SlideFooter currentSlide={currentSlide.value} scrollRef={scrollRef} />}
+      {slideIndex === slides.length - 1 ? (
+        <GetStartedFooter />
+      ) : (
+        <SlideFooter currentSlide={slideIndex} scrollRef={scrollRef} />
+      )}
     </BackgroundContainer>
   );
 }

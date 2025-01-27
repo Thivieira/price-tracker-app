@@ -1,4 +1,4 @@
-import { Hero, BackgroundImage, ScreenContainer, imageMapping } from "@/components/styles/onboarding.styles";
+import { Hero, BackgroundImage, ScreenContainer, imageMapping, InfoContainer, DescriptionText, TitleText } from "@/components/styles/onboarding.styles";
 
 export default function One({
   image,
@@ -9,15 +9,22 @@ export default function One({
   title: string;
   description: string;
 }) {
+  const source = imageMapping[image as keyof typeof imageMapping];
+
   return (
     <ScreenContainer>
       <BackgroundImage
         source={require('@/assets/images/onboarding/top-shelf.svg')}
         contentFit="cover"
       />
-      <Hero source={imageMapping[image as 'price-control-togles']} contentFit="contain" />
-      {/* <Title title={title} />
-      <Info description={description} /> */}
+      <Hero
+        source={source}
+        contentFit="contain"
+      />
+      <InfoContainer>
+        <TitleText>{title}</TitleText>
+        <DescriptionText>{description}</DescriptionText>
+      </InfoContainer>
     </ScreenContainer>
-  )
+  );
 }

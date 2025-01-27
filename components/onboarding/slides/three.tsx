@@ -1,5 +1,4 @@
-import { BackgroundImage, Hero, imageMapping, ScreenContainer } from "@/components/styles/onboarding.styles";
-import { View } from "react-native";
+import { BackgroundImage, DescriptionText, Hero, imageMapping, InfoContainer, ScreenContainer, TitleText } from "@/components/styles/onboarding.styles";
 
 export default function Three({
   image,
@@ -17,8 +16,10 @@ export default function Three({
         contentFit="cover"
       />
       <Hero source={imageMapping[image as 'stay-secure']} />
-      {/* <Title title={title} />
-      <Info description={description} /> */}
+      <InfoContainer>
+        <TitleText>{title}</TitleText>
+        <DescriptionText>{description}</DescriptionText>
+      </InfoContainer>
     </ScreenContainer>
   )
 }

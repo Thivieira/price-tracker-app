@@ -4,6 +4,7 @@ import { styled } from 'styled-components/native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 export const BackgroundContainer = styled(View)`flex: 1; background-color: #ffffff;`
+
 export const ScreenContainer = styled(View)`
 flex: 1;
 width: 100%;
@@ -13,64 +14,66 @@ align-items: center;
 `
 
 export const BackgroundImage = styled(Image)`
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 500px;
   top: 0;
-  margin-bottom: 278px;
 `
 
 export const Hero = styled(Image)`
-  flex: 1;
-  position: relative;
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  top: 100px;
+  z-index: 2;
+  align-self: center;
+`
+
+export const InfoContainer = styled(View)`
+  position: absolute;
+  bottom: 120px;
   width: 100%;
-  height: 300px;
-  top: 0;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   z-index: 1;
 `
 
-const TitleContainer = styled(View)`
-
+export const TitleText = styled(Text)`
+font-family: 'DMSans_700Bold';
+font-style: normal;
+font-weight: 700;
+font-size: 36px;
+line-height: 46px;
+text-align: center;
+letter-spacing: -1px;
+color: rgba(18, 3, 58, 1);
+margin-top: 10px;
 `
-const TitleText = styled(Text)`
-
+export const DescriptionText = styled(Text)`
+font-family: 'DMSans_500Medium';
+font-style: normal;
+font-weight: 500;
+font-size: 14px;
+line-height: 24px;
+text-align: center;
+letter-spacing: -0.3px;
+color: rgba(18, 3, 58, 0.8);
 `
-
-
-export const InfoContainer = styled(View)`flex: 1; background-color: #DC143C;`
-export const DescriptionText = styled(Text)`font-size: 16px;`
-
-
-
-
-
 
 export const ImageContainer = styled(Image)`flex: 1; background-color: #DC143C;`
 
-// Create an image mapping object
 export const imageMapping = {
   'price-control-togles': require('@/assets/images/onboarding/price-control-togles.svg'),
   'manage-your-portfolio': require('@/assets/images/onboarding/manage-your-portfolio.svg'),
   'stay-secure': require('@/assets/images/onboarding/stay-secure.svg'),
 } as const;
 
-// Update the type to only allow valid image keys
 export type ImageKey = keyof typeof imageMapping;
 
-// export const Hero = ({ image }: { image: ImageKey }) => {
-//   return <ImageContainer>
-//     <Image source={imageMapping[image]} style={{ width: '100%', height: '100%' }} />
-//   </ImageContainer>
-// }
-
-
-
 export const ActionContainer = styled(View)`flex: 1; background-color: #DC143C;`
-
-
-
-
-
 
 export const FooterContainer = styled(View)`
   width: 100%;
@@ -89,7 +92,9 @@ export const DotsContainer = styled(View)`
   align-items: center;
 `
 
-export const AnimatedDot = styled(Animated.View) <{ isActive: boolean }>`
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
+
+export const AnimatedDot = styled(AnimatedTouchable) <{ isActive: boolean, onPress: () => void }>`
   width: 8px;
   height: 8px;
   border-radius: 4px;
@@ -97,7 +102,7 @@ export const AnimatedDot = styled(Animated.View) <{ isActive: boolean }>`
   background-color: ${({ isActive }: { isActive: boolean }) => isActive ? '#12033A' : 'rgba(18, 3, 58, 0.2)'};
 `
 
-export const Dot: React.FC<{ isActive: boolean }> = ({ isActive }) => {
+export const Dot: React.FC<{ isActive: boolean, onPress: () => void }> = ({ isActive, onPress }) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: isActive ? 1.2 : 1 }],
@@ -105,7 +110,7 @@ export const Dot: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     };
   });
 
-  return <AnimatedDot style={animatedStyle} />;
+  return <AnimatedDot style={animatedStyle} onPress={onPress} />;
 };
 
 

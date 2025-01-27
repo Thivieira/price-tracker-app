@@ -1,5 +1,4 @@
-import { View } from "react-native";
-import { BackgroundImage, Hero, imageMapping, ScreenContainer } from "../../styles/onboarding.styles";
+import { BackgroundImage, DescriptionText, Hero, imageMapping, InfoContainer, ScreenContainer, TitleText } from "../../styles/onboarding.styles";
 
 
 export default function Two({
@@ -18,8 +17,10 @@ export default function Two({
         contentFit="cover"
       />
       <Hero source={imageMapping[image as 'manage-your-portfolio']} />
-      {/* <Title title={title} />
-      <Info description={description} /> */}
+      <InfoContainer>
+        <TitleText>{title}</TitleText>
+        <DescriptionText>{description}</DescriptionText>
+      </InfoContainer>
     </ScreenContainer>
   )
 }

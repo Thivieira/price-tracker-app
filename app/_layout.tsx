@@ -1,5 +1,5 @@
 import { useFonts } from 'expo-font';
-import { DMSans_400Regular, DMSans_700Bold } from '@expo-google-fonts/dm-sans';
+import { DMSans_400Regular, DMSans_500Medium, DMSans_700Bold } from '@expo-google-fonts/dm-sans';
 import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     DMSans_400Regular,
+    DMSans_500Medium,
     DMSans_700Bold,
   });
 
