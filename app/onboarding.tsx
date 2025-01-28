@@ -11,7 +11,7 @@ export default function OnboardingScreen() {
   }
 
   if (isOnboardingComplete) {
-    router.replace('/(tabs)');
+    router.replace('/');
     return null;
   }
 

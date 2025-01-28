@@ -5,11 +5,11 @@ import { BackgroundContainer, TitleText, ButtonContainer, ActionButton, MutedAct
 export default function Page() {
 
   const onGetStarted = () => {
-    router.replace('/onboarding');
+    router.push('/onboarding');
   }
 
   const onSignIn = () => {
-    router.replace('/signin');
+    router.push('/signin');
   }
 
   useEffect(() => {

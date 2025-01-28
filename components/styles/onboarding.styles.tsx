@@ -50,9 +50,10 @@ line-height: 46px;
 text-align: center;
 letter-spacing: -1px;
 color: rgba(18, 3, 58, 1);
-margin-top: 10px;
 `
 export const DescriptionText = styled(Text)`
+position: relative;
+top: 20px;
 font-family: 'DMSans_500Medium';
 font-style: normal;
 font-weight: 500;
@@ -99,7 +100,7 @@ export const AnimatedDot = styled(AnimatedTouchable) <{ isActive: boolean, onPre
   height: 8px;
   border-radius: 4px;
   margin: 0 4px;
-  background-color: ${({ isActive }: { isActive: boolean }) => isActive ? '#12033A' : 'rgba(18, 3, 58, 0.2)'};
+  background-color: ${({ isActive }) => isActive ? '#12033A' : 'rgba(18, 3, 58, 0.2)'};
 `
 
 export const Dot: React.FC<{ isActive: boolean, onPress: () => void }> = ({ isActive, onPress }) => {
