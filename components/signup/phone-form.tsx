@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View, TextInput, StyleSheet, Pressable } from 'react-native';
 import { Text } from "@/components/Themed";
-
+import InternationalPhoneInput from '../international-phone-input';
+import { Control, Controller, FieldValues, useForm } from 'react-hook-form';
 interface PhoneFormProps {
   onNext: (phone: string) => void;
 }
@@ -9,18 +10,19 @@ interface PhoneFormProps {
 export default function PhoneForm({ onNext }: PhoneFormProps) {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const { control, handleSubmit } = useForm();
 
-  const handleSubmit = () => {
-    if (phone.length < 10) {
-      setError('Please enter a valid phone number');
-      return;
-    }
-    onNext(phone);
-  };
+  // const handleSubmit = () => {
+  //   if (phone.length < 10) {
+  //     setError('Please enter a valid phone number');
+  //     return;
+  //   }
+  //   onNext(phone);
+  // };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter your phone number</Text>
+      {/* <Text style={styles.title}>Enter your phone number</Text>
       <TextInput
         style={styles.input}
         value={phone}
@@ -29,7 +31,11 @@ export default function PhoneForm({ onNext }: PhoneFormProps) {
         keyboardType="phone-pad"
         autoFocus
       />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+      {error ? <Text style={styles.error}>{error}</Text> : null} */}
+      <InternationalPhoneInput
+        control={control}
+        handleSubmit={handleSubmit}
+      />
       <Pressable
         style={styles.button}
         onPress={handleSubmit}
@@ -45,6 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,
