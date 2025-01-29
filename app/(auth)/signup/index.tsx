@@ -1,12 +1,11 @@
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
 import PhoneForm from '../../../components/signup/phone-form';
+import { SignUpIndexContainer } from '@/components/styles/signup.styles';
 
 export default function SignUpPhone() {
   const router = useRouter();
 
   const handleNext = (phone: string) => {
-    // Store phone in global state or pass via router params
     router.push({
       pathname: '/(auth)/signup/phone-verification',
       params: { phone }
@@ -14,8 +13,8 @@ export default function SignUpPhone() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20, backgroundColor: '#fff' }}>
+    <SignUpIndexContainer>
       <PhoneForm onNext={handleNext} />
-    </View>
+    </SignUpIndexContainer>
   );
 }

@@ -1,11 +1,15 @@
 import { useFonts } from 'expo-font';
-import { DMSans_400Regular, DMSans_500Medium, DMSans_700Bold } from '@expo-google-fonts/dm-sans';
 import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { OnboardingProvider } from '../contexts/OnboardingContext';
 import { AuthProvider } from '../contexts/AuthContext';
+import {
+  DMSans_400Regular,
+  DMSans_500Medium,
+  DMSans_700Bold
+} from '@expo-google-fonts/dm-sans';
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.

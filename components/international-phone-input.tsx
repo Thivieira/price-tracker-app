@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View } from 'react-native';
 import PhoneInput, {
   ICountry,
 } from 'react-native-international-phone-number';
 import { Control, Controller, FieldValues } from 'react-hook-form';
+import { PhoneInputContainer, phoneInputStyles } from './international-phone-input.styles';
+import { modalStyles } from './international-phone-input.styles';
+import { Image } from 'expo-image';
 
 interface FormProps extends FieldValues {
   phoneNumber: string;
@@ -18,48 +21,33 @@ export default function InternationalPhoneInput({ control, handleSubmit }: { con
     setSelectedCountry(country);
   }
 
-  function onSubmit(form: FormProps) {
-    Alert.alert(
-      'Advanced Result',
-      `${selectedCountry?.callingCode} ${form.phoneNumber}`
-    );
-  }
+  // function onSubmit(form: FormProps) {
+  //   console.log(
+  //     'Advanced Result',
+  //     `${selectedCountry?.callingCode} ${form.phoneNumber}`
+  //   );
+  // }
 
   return (
-    <View style={{ width: '100%', flex: 1, padding: 24 }}>
+    <PhoneInputContainer>
       <Controller
         name="phoneNumber"
         control={control}
         render={({ field: { onChange, value } }) => (
           <PhoneInput
-            defaultValue="+12505550199"
+            // defaultValue="+12505550199"
+            placeholderTextColor="rgba(18, 3, 58, 0.2)"
+            placeholder="0 00 00 00 00"
             value={value}
             onChangePhoneNumber={onChange}
             selectedCountry={selectedCountry}
             onChangeSelectedCountry={handleSelectedCountry}
+            phoneInputStyles={phoneInputStyles}
+            modalStyles={modalStyles}
+            customCaret={<Image source={require('@/assets/images/input-caret.svg')} style={{ width: 18, height: 8, marginLeft: 10 }} />}
           />
         )}
       />
-      <TouchableOpacity
-        style={{
-          width: '100%',
-          paddingVertical: 12,
-          backgroundColor: '#2196F3',
-          borderRadius: 4,
-        }}
-        onPress={handleSubmit(onSubmit)}
-      >
-        <Text
-          style={{
-            color: '#F3F3F3',
-            textAlign: 'center',
-            fontSize: 16,
-            fontWeight: 'bold',
-          }}
-        >
-          Submit
-        </Text>
-      </TouchableOpacity>
-    </View>
+    </PhoneInputContainer>
   );
 }

@@ -1,11 +1,47 @@
 import { useState } from 'react';
-import { View, TextInput, StyleSheet, Pressable } from 'react-native';
-import { Text } from "@/components/Themed";
 import InternationalPhoneInput from '../international-phone-input';
 import { Control, Controller, FieldValues, useForm } from 'react-hook-form';
+import { PhoneFormAlreadyHaveAccountLink, PhoneFormAlreadyHaveAccountLinkText, PhoneFormAlreadyHaveAccountText, PhoneFormAlreadyHaveAccountTextContainer, PhoneFormContainer, PhoneFormTermsAndConditionsTextContainer, PhoneFormTermsAndConditionsLink, PhoneFormTermsAndConditionsText, PhoneFormTitle, PhoneFormTermsAndConditionsLinkText } from '../styles/signup.styles';
+import { ActionButton, ActionButtonText } from '../styles/index.styles';
+import { router } from 'expo-router';
+import { View } from 'react-native';
+
 interface PhoneFormProps {
   onNext: (phone: string) => void;
 }
+
+const AlreadyHaveAccount = () => {
+  const onSignIn = () => {
+    router.push('/signin');
+  };
+
+  return (
+    <PhoneFormAlreadyHaveAccountTextContainer>
+      <PhoneFormAlreadyHaveAccountText>
+        Already have an account?
+      </PhoneFormAlreadyHaveAccountText>
+      <PhoneFormAlreadyHaveAccountLink onPress={onSignIn}>
+        <PhoneFormAlreadyHaveAccountLinkText>Sign In</PhoneFormAlreadyHaveAccountLinkText>
+      </PhoneFormAlreadyHaveAccountLink>
+    </PhoneFormAlreadyHaveAccountTextContainer>
+  );
+};
+
+const TermsAndConditions = () => {
+  return (
+    <PhoneFormTermsAndConditionsTextContainer>
+      <PhoneFormTermsAndConditionsText>
+        By creating an account you agree
+      </PhoneFormTermsAndConditionsText>
+      <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center' }}>
+        <PhoneFormTermsAndConditionsText>to our</PhoneFormTermsAndConditionsText>
+        <PhoneFormTermsAndConditionsLink>
+          <PhoneFormTermsAndConditionsLinkText>Terms and Conditions</PhoneFormTermsAndConditionsLinkText>
+        </PhoneFormTermsAndConditionsLink>
+      </View>
+    </PhoneFormTermsAndConditionsTextContainer>
+  );
+};
 
 export default function PhoneForm({ onNext }: PhoneFormProps) {
   const [phone, setPhone] = useState('');
@@ -20,64 +56,24 @@ export default function PhoneForm({ onNext }: PhoneFormProps) {
   //   onNext(phone);
   // };
 
+  const onSubmit = (data: any) => {
+    console.log(data);
+    onNext(data.phoneNumber);
+  };
+
   return (
-    <View style={styles.container}>
-      {/* <Text style={styles.title}>Enter your phone number</Text>
-      <TextInput
-        style={styles.input}
-        value={phone}
-        onChangeText={setPhone}
-        placeholder="Phone number"
-        keyboardType="phone-pad"
-        autoFocus
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null} */}
+    <PhoneFormContainer>
+      <PhoneFormTitle>Getting Started</PhoneFormTitle>
       <InternationalPhoneInput
         control={control}
-        handleSubmit={handleSubmit}
       />
-      <Pressable
-        style={styles.button}
-        onPress={handleSubmit}
-      >
-        <Text style={styles.buttonText}>Next</Text>
-      </Pressable>
-    </View>
+      <View style={{ marginTop: 20 }}>
+        <ActionButton onPress={handleSubmit(onSubmit)}>
+          <ActionButtonText>Send Code</ActionButtonText>
+        </ActionButton>
+      </View>
+      <AlreadyHaveAccount />
+      <TermsAndConditions />
+    </PhoneFormContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 20,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-}); 
