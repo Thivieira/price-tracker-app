@@ -177,4 +177,47 @@ export const VerificationFormUnitInputContainer = styled(View)`
   margin-top: 32px;
 `;
 
+export const VerificationFormAlreadyHaveAccountLink = styled(TouchableOpacity)`
+  margin-top: 26px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const VerificationFormAlreadyHaveAccountLinkText = styled(Text)`
+  font-family: 'DMSans_700Bold';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 26px;
+  letter-spacing: -0.355556px;
+  color: #23EBC3;
+`;
+
+export const SignUpPersonalInformationContainer = styled(View)`
+  flex: 1;
+  background-color: #fff;
+  padding: 24px;
+`;
+
+export const SignUpPersonalInformationTitle = styled(Text)`
+  font-family: 'DMSans_700Bold';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 46px;
+  text-align: center;
+  letter-spacing: -1px;
+  color: #12033A;
+`;
+
+export const SignUpPersonalInformationSubtitle = styled(Text)`
+  font-family: 'DMSans_500Medium';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: -0.3px;
+  color: rgba(18, 3, 58, 0.8);
+`;
 

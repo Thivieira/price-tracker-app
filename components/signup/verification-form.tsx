@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
-import { VerificationFormTitle, VerificationFormContainer, VerificationFormSubtitle, VerificationFormUnitInput, VerificationFormUnitInputContainer, PhoneFormAlreadyHaveAccountLink, PhoneFormAlreadyHaveAccountLinkText } from '@/components/styles/signup.styles';
+import { VerificationFormTitle, VerificationFormContainer, VerificationFormSubtitle, VerificationFormUnitInput, VerificationFormUnitInputContainer, PhoneFormAlreadyHaveAccountLink, PhoneFormAlreadyHaveAccountLinkText, VerificationFormAlreadyHaveAccountLinkText, VerificationFormAlreadyHaveAccountLink } from '@/components/styles/signup.styles';
 import { router } from 'expo-router';
 
 interface VerificationFormProps {
@@ -11,48 +11,96 @@ interface VerificationFormProps {
 const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> = ({ onComplete }) => {
   const [code, setCode] = useState(['', '', '', '']);
   const [focusedIndex, setFocusedIndex] = useState(0);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [error, setError] = useState('');
   const inputRefs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
-  const handleChange = (text: string, index: number) => {
-    // Handle pasting full code
-    if (text.length > 1) {
-      const digits = text.slice(0, 4).split('');
-      setCode(digits.concat(Array(4 - digits.length).fill('')));
-      digits.forEach((_, idx) => {
-        if (idx < 3) {
-          inputRefs.current[idx + 1]?.focus();
-        }
-      });
-      if (onComplete) {
-        onComplete(digits.join(''));
-      }
-      return;
-    }
+  const verifyCode = async (verificationCode: string) => {
+    setIsVerifying(true);
+    setError('');
 
+    router.push('/(auth)/signup/personal-information');
+
+    try {
+      // // Replace this with your actual API call
+      // const response = await fetch('/api/verify-code', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ code: verificationCode }),
+      // });
+
+      // if (response.ok) {
+      //   router.push('/(auth)/signup/personal-information');
+      // } else {
+      //   setError('Invalid verification code');
+      //   // Reset the code inputs
+      //   setCode(['', '', '', '']);
+      //   inputRefs.current[0]?.focus();
+      // }
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handlePastedCode = (text: string) => {
+    const digits = text.slice(0, 4).split('');
+    setCode(digits.concat(Array(4 - digits.length).fill('')));
+
+    digits.forEach((_, idx) => {
+      if (idx < 3) {
+        inputRefs.current[idx + 1]?.focus();
+      }
+    });
+
+    if (onComplete) {
+      onComplete(digits.join(''));
+    }
+  };
+
+  const handleBackspace = (index: number) => {
     const newCode = [...code];
+    newCode[index] = '';
+    setCode(newCode);
 
-    // If the input is empty (backspace was pressed)
-    if (text === '') {
-      newCode[index] = '';
-      setCode(newCode);
-      // Move to previous input if we're not at the first input
-      if (index > 0) {
-        inputRefs.current[index - 1]?.focus();
-      }
-      return;
+    if (index > 0) {
+      inputRefs.current[index - 1]?.focus();
     }
+  };
 
-    // Handle single digit input
+  const handleSingleDigit = (text: string, index: number) => {
+    const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
 
     if (text !== '') {
       if (index < 3) {
         inputRefs.current[index + 1]?.focus();
-      } else if (index === 3 && onComplete) {
-        onComplete(newCode.join(''));
+      } else if (index === 3) {
+        const completeCode = [...newCode.slice(0, 3), text].join('');
+        if (onComplete) {
+          onComplete(completeCode);
+        }
+        verifyCode(completeCode);
       }
     }
+  };
+
+  const handleChange = (text: string, index: number) => {
+    if (text.length > 1) {
+      handlePastedCode(text);
+      return;
+    }
+
+    if (text === '') {
+      handleBackspace(index);
+      return;
+    }
+
+    handleSingleDigit(text, index);
   };
 
   return (
@@ -90,9 +138,9 @@ export default function VerificationForm({ onComplete, phone }: VerificationForm
         We've sent the code to {phone ? `****${phone.slice(-3)}` : ''}
       </VerificationFormSubtitle>
       <VerificationFormInput onComplete={onComplete} />
-      <PhoneFormAlreadyHaveAccountLink onPress={onResend}>
-        <PhoneFormAlreadyHaveAccountLinkText>Resend</PhoneFormAlreadyHaveAccountLinkText>
-      </PhoneFormAlreadyHaveAccountLink>
+      <VerificationFormAlreadyHaveAccountLink onPress={onResend}>
+        <VerificationFormAlreadyHaveAccountLinkText>Resend</VerificationFormAlreadyHaveAccountLinkText>
+      </VerificationFormAlreadyHaveAccountLink>
     </VerificationFormContainer>
   );
 }

@@ -1,7 +1,15 @@
+import { SignUpPersonalInformationContainer, SignUpPersonalInformationSubtitle, SignUpPersonalInformationTitle } from '@/components/styles/signup.styles'
 import React from 'react'
 
 export default function PersonalInformation() {
   return (
-    <div>personal-information</div>
+    <SignUpPersonalInformationContainer>
+      <SignUpPersonalInformationTitle>
+        Personal Information
+      </SignUpPersonalInformationTitle>
+      <SignUpPersonalInformationSubtitle>
+        Please enter your personal information
+      </SignUpPersonalInformationSubtitle>
+    </SignUpPersonalInformationContainer>
   )
 }
