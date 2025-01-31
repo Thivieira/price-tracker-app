@@ -2,6 +2,19 @@ import { styled } from "styled-components/native";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as Progress from 'react-native-progress';
 import { Image } from "expo-image";
+import {
+  AuthContainer,
+  AuthContentContainer,
+  AuthTitle,
+  AuthSubtitle,
+  AuthFormContainer
+} from "./common.styles";
+
+export const SignUpContainer = AuthContainer;
+export const SignUpContentContainer = AuthContentContainer;
+export const SignUpTitle = AuthTitle;
+export const SignUpSubtitle = AuthSubtitle;
+export const SignUpFormContainer = AuthFormContainer;
 
 export const BackgroundContainer = styled(View)`
   flex: 1;
