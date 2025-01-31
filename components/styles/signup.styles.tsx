@@ -1,7 +1,7 @@
 import { styled } from "styled-components/native";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as Progress from 'react-native-progress';
-import React from "react";
+import { Image } from "expo-image";
 
 export const BackgroundContainer = styled(View)`
   flex: 1;
@@ -18,18 +18,34 @@ export const SignUpPhoneVerificationContainer = styled(SignUpIndexContainer)`
   background-color: #fff;
 `;
 
+export const GoBackButtonTouchable = styled(TouchableOpacity)`
+  position: absolute;
+  top: 45px;
+  left: 24px;
+`;
+
+export const GoBackButton = ({ onPress }: { onPress: () => void }) => (
+  <GoBackButtonTouchable onPress={onPress}>
+    <Image
+      source={require("@/assets/images/arrow-left.svg")}
+      style={{ width: 14, height: 14 }}
+      contentFit="contain"
+      alt="Go back"
+    />
+  </GoBackButtonTouchable>
+);
+
 export const ProgressBarContainer = styled(View)`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  height: 60px;
 `;
-
 
 export const ProgressBar = styled(Progress.Bar)`
   margin-top: 50px;
 `;
-
 
 export const PhoneFormContainer = styled(View)`
   display: flex;
@@ -72,8 +88,6 @@ export const PhoneFormAlreadyHaveAccountText = styled(Text)`
   margin-right: 10px;
 `;
 
-
-
 export const PhoneFormAlreadyHaveAccountLink = styled(TouchableOpacity)`
   margin-left: 10px;
   margin-bottom: 22px;
@@ -88,7 +102,6 @@ export const PhoneFormAlreadyHaveAccountLinkText = styled(Text)`
   letter-spacing: -0.355556px;
   color: #23EBC3;
 `;
-
 
 export const PhoneFormTermsAndConditionsTextContainer = styled(View)`
   display: flex;
@@ -219,5 +232,6 @@ export const SignUpPersonalInformationSubtitle = styled(Text)`
   text-align: center;
   letter-spacing: -0.3px;
   color: rgba(18, 3, 58, 0.8);
+  margin-top: 4px;
 `;
 

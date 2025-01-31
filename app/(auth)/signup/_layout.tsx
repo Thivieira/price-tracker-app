@@ -1,9 +1,11 @@
-import { BackgroundContainer, ProgressBar, ProgressBarContainer } from "@/components/styles/signup.styles";
-import { Stack, usePathname } from "expo-router";
+import { BackgroundContainer, GoBackButton, ProgressBar, ProgressBarContainer } from "@/components/styles/signup.styles";
+import { Image } from "expo-image";
+import { Stack, usePathname, useRouter } from "expo-router";
 import { useMemo } from "react";
 
 export default function SignupLayout() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const progress = useMemo(() => {
     const steps = {
@@ -20,9 +22,11 @@ export default function SignupLayout() {
   return (
     <BackgroundContainer>
       <ProgressBarContainer>
+        {progress > 0.1 && <GoBackButton onPress={() => router.back()} />}
         <ProgressBar
           progress={progress}
-          width={200}
+          width={88}
+          height={8}
           borderWidth={0}
           color="rgba(35, 235, 195, 1)"
           unfilledColor="rgba(35, 235, 195, 0.1)"

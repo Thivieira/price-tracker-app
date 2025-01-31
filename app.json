@@ -14,13 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.truther.pricetracker"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.truther.pricetracker"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +38,9 @@
             "../assets/fonts/DMSans_Regular.ttf",
             "../assets/fonts/DMSans_Medium.ttf",
             "../assets/fonts/DMSans_Bold.ttf",
+            "node_modules/@expo-google-fonts/dm-sans/DMSans_400Regular.ttf",
+            "node_modules/@expo-google-fonts/dm-sans/DMSans_500Medium.ttf",
+            "node_modules/@expo-google-fonts/dm-sans/DMSans_700Bold.ttf",
             "node_modules/react-native-international-phone-number/lib/assets/fonts/TwemojiMozilla.woff2"
           ]
         }

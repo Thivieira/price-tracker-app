@@ -8,7 +8,8 @@ export default function PersonalInformation() {
         Personal Information
       </SignUpPersonalInformationTitle>
       <SignUpPersonalInformationSubtitle>
-        Please enter your personal information
+        We ask for your personal information{'\n'}
+        to verify your identity
       </SignUpPersonalInformationSubtitle>
     </SignUpPersonalInformationContainer>
   )
