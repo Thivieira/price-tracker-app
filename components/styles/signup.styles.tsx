@@ -235,3 +235,8 @@ export const SignUpPersonalInformationSubtitle = styled(Text)`
   margin-top: 4px;
 `;
 
+export const SignUpPersonalInformationFormContainer = styled(View)`
+  flex: 1;
+  background-color: #fff;
+  padding: 24px;
+`;
