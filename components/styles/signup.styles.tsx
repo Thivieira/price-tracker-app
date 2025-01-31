@@ -18,22 +18,24 @@ export const SignUpPhoneVerificationContainer = styled(SignUpIndexContainer)`
   background-color: #fff;
 `;
 
-export const GoBackButtonTouchable = styled(TouchableOpacity)`
-  position: absolute;
-  top: 45px;
-  left: 24px;
-`;
+export const GoBackButton = ({ onPress }: { onPress: () => void }) => {
+  const GoBackButtonTouchable = styled(TouchableOpacity)`
+    position: absolute;
+    top: 45px;
+    left: 24px;
+  `;
 
-export const GoBackButton = ({ onPress }: { onPress: () => void }) => (
-  <GoBackButtonTouchable onPress={onPress}>
-    <Image
-      source={require("@/assets/images/arrow-left.svg")}
-      style={{ width: 14, height: 14 }}
-      contentFit="contain"
-      alt="Go back"
-    />
-  </GoBackButtonTouchable>
-);
+  return (
+    <GoBackButtonTouchable onPress={onPress}>
+      <Image
+        source={require("@/assets/images/arrow-left.svg")}
+        style={{ width: 14, height: 14 }}
+        contentFit="contain"
+        alt="Go back"
+      />
+    </GoBackButtonTouchable>
+  )
+};
 
 export const ProgressBarContainer = styled(View)`
   display: flex;
@@ -236,7 +238,31 @@ export const SignUpPersonalInformationSubtitle = styled(Text)`
 `;
 
 export const SignUpPersonalInformationFormContainer = styled(View)`
-  flex: 1;
   background-color: #fff;
   padding: 24px;
+  flex-shrink: 1;
 `;
+
+export const SignUpFormNextButton = ({ onPress }: { onPress: () => void }) => {
+  const SignUpFormNextButtonContainer = styled(TouchableOpacity)`
+    background: #23EBC3;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 58px;
+    height: 58px;
+  `;
+
+  return (
+    <SignUpFormNextButtonContainer onPress={onPress}>
+      <Image
+        source={require("@/assets/images/right-caret.svg")}
+        style={{ width: 24, height: 24 }}
+        contentFit="contain"
+        alt="Next"
+      />
+    </SignUpFormNextButtonContainer>
+  )
+}

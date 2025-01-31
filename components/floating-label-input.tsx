@@ -86,7 +86,7 @@ const InputContainer = styled.View<{ isFocused: boolean }>`
   top: 0;
   bottom: 0;
   background: #FFFFFF;
-  border: 1px solid ${props => props.isFocused ? '#4A3AFF' : 'rgba(18, 3, 58, 0.1)'};
+  border: 1px solid ${props => props.isFocused ? 'rgba(18, 3, 58, 0.4)' : 'rgba(18, 3, 58, 0.1)'};
   border-radius: 16px;
   padding: 0;
   transition: border-color 0.2s ease;
