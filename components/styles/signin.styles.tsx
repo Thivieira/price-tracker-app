@@ -22,4 +22,5 @@ export const SignInFormContainer = styled(AuthFormContainer)`
   margin-top: 40px;
 `;
 
-export const SignInFormNextButton = SignUpFormNextButton;
+export const SignInFormNextButton = styled(SignUpFormNextButton)`
+`;

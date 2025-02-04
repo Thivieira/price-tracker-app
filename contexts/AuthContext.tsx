@@ -11,18 +11,22 @@ interface User {
 
 interface AuthState {
   user: User | null;
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isPinVerified: boolean;
 }
 
+
 interface AuthContextType {
   user: User | null;
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isPinVerified: boolean;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (username_or_email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   verifyPin: (pin: string) => Promise<boolean>;
+
   setupPin: (pin: string) => Promise<void>;
 }
 
@@ -34,15 +38,61 @@ const api = axios.create({
   },
 });
 
+// Create a function that can be called from both the interceptor and component
+const clearAuthData = async () => {
+  await Promise.all([
+    AsyncStorage.removeItem('accessToken'),
+    AsyncStorage.removeItem('refreshToken'),
+    AsyncStorage.removeItem('user'),
+    AsyncStorage.removeItem('pin'),
+  ]);
+  router.replace('/');
+};
+
+// Add axios interceptor for automatic token refresh
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/refresh') {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        const response = await axios.post(
+          `${process.env.EXPO_PUBLIC_API_URL}/auth/refresh`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          }
+        );
+        const { accessToken: newAccessToken } = response.data;
+        await AsyncStorage.setItem('accessToken', newAccessToken);
+        api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        // If refresh fails, clear auth data
+        await clearAuthData();
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: null,
-    token: null,
+    accessToken: null,
+    refreshToken: null,
     isPinVerified: false,
   });
   const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     loadStoredAuth();
@@ -50,23 +100,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Update axios token when auth state changes
   useEffect(() => {
-    if (state.token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
+    if (state.accessToken) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${state.accessToken}`;
     } else {
       delete api.defaults.headers.common['Authorization'];
     }
-  }, [state.token]);
+
+  }, [state.accessToken]);
+
 
   const loadStoredAuth = async () => {
     try {
-      const [token, userStr] = await Promise.all([
-        AsyncStorage.getItem('token'),
+      const [accessToken, refreshToken, userStr] = await Promise.all([
+        AsyncStorage.getItem('accessToken'),
+        AsyncStorage.getItem('refreshToken'),
         AsyncStorage.getItem('user'),
       ]);
 
-      if (token && userStr) {
+      if (accessToken && refreshToken && userStr) {
         const user = JSON.parse(userStr);
-        setState({ user, token, isPinVerified: false });
+        setState({
+          user,
+          accessToken,
+          refreshToken,
+          isPinVerified: false
+        });
         router.replace('/pin-verification');
       }
     } catch (error) {
@@ -76,33 +134,67 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const fetchUserProfile = async (accessToken: string) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
-      const { token, user } = response.data;
+      const response = await api.get('/auth/me');
+      const user = response.data;
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      return user;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
+  };
+
+  const signIn = async (username_or_email: string, password: string) => {
+    try {
+      // Add request timeout and more detailed error logging
+      const response = await api.post('/auth/login',
+        { username_or_email, password },
+        {
+          timeout: 10000, // 10 second timeout
+          validateStatus: (status) => status < 500 // Allow 4xx errors to be handled
+        }
+      );
+
+      const { accessToken, refreshToken } = response.data;
+
+      // Fetch user profile after successful login
+      const user = await fetchUserProfile(accessToken);
 
       await Promise.all([
-        AsyncStorage.setItem('token', token),
-        AsyncStorage.setItem('user', JSON.stringify(user)),
+        AsyncStorage.setItem('accessToken', accessToken),
+        AsyncStorage.setItem('refreshToken', refreshToken),
       ]);
 
-      setState({ user, token, isPinVerified: false });
-      router.replace('/pin-setup');
+      setState({ user, accessToken, refreshToken, isPinVerified: false });
+      router.replace('/pin-verification');
     } catch (error) {
-      console.error('Sign in error:', error);
+      // More detailed error logging
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', {
+          message: error.message,
+          code: error.code,
+          config: {
+            url: error.config?.url,
+            method: error.config?.method,
+            baseURL: error.config?.baseURL,
+          },
+          response: error.response?.data
+        });
+
+        if (!error.response) {
+          throw new Error('Unable to reach the server. Please check your internet connection and try again.');
+        }
+      }
       throw error;
     }
   };
 
   const signOut = async () => {
     try {
-      await Promise.all([
-        AsyncStorage.removeItem('token'),
-        AsyncStorage.removeItem('user'),
-        AsyncStorage.removeItem('pin'),
-      ]);
-      setState({ user: null, token: null, isPinVerified: false });
-      router.replace('/');
+      await clearAuthData();
+      setState({ user: null, accessToken: null, refreshToken: null, isPinVerified: false });
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -136,13 +228,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         user: state.user,
-        token: state.token,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         isPinVerified: state.isPinVerified,
         isLoading,
         signIn,
         signOut,
         verifyPin,
         setupPin,
+
       }}
     >
       {children}

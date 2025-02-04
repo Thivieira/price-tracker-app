@@ -34,16 +34,20 @@ export default function PhoneVerification() {
 
 
   const handleNext = (code: string) => {
-    console.log(code);
+    router.push({
+      pathname: '/(auth)/signup/account',
+      params: { phone, verificationCode: code }
+    });
   };
+
 
   return (
     <SignUpPhoneVerificationContainer>
       <VerificationForm
         phone={phone}
-        onNext={handleNext}
-        isSubmitting={isSubmitting}
+        onComplete={handleNext}
       />
     </SignUpPhoneVerificationContainer>
+
   );
 }

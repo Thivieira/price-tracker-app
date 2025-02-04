@@ -19,7 +19,7 @@ const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> =
     setIsVerifying(true);
     setError('');
 
-    router.push('/(auth)/signup/personal-information');
+
 
     try {
       // // Replace this with your actual API call
@@ -39,6 +39,7 @@ const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> =
       //   setCode(['', '', '', '']);
       //   inputRefs.current[0]?.focus();
       // }
+      onComplete?.(verificationCode);
     } catch (err) {
       setError('Something went wrong. Please try again.');
     } finally {

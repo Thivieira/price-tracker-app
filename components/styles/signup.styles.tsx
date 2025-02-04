@@ -256,7 +256,12 @@ export const SignUpPersonalInformationFormContainer = styled(View)`
   flex-shrink: 1;
 `;
 
-export const SignUpFormNextButton = ({ onPress }: { onPress: () => void }) => {
+interface SignUpFormNextButtonProps {
+  onPress: () => void;
+  isLoading?: boolean;
+}
+
+export const SignUpFormNextButton = ({ onPress, isLoading = false }: SignUpFormNextButtonProps) => {
   const SignUpFormNextButtonContainer = styled(TouchableOpacity)`
     background: #23EBC3;
     border-radius: 16px;
@@ -266,16 +271,26 @@ export const SignUpFormNextButton = ({ onPress }: { onPress: () => void }) => {
     align-items: center;
     width: 58px;
     height: 58px;
+    opacity: ${props => props.disabled ? 0.7 : 1};
   `;
 
   return (
-    <SignUpFormNextButtonContainer onPress={onPress}>
-      <Image
-        source={require("@/assets/images/right-caret.svg")}
-        style={{ width: 24, height: 24 }}
-        contentFit="contain"
-        alt="Next"
-      />
+    <SignUpFormNextButtonContainer onPress={onPress} disabled={isLoading}>
+      {isLoading ? (
+        <Progress.CircleSnail
+          size={32}
+          color={["#FFFFFF"]}
+          thickness={3}
+          duration={700}
+        />
+      ) : (
+        <Image
+          source={require("@/assets/images/right-caret.svg")}
+          style={{ width: 24, height: 24 }}
+          contentFit="contain"
+          alt="Next"
+        />
+      )}
     </SignUpFormNextButtonContainer>
   )
 }

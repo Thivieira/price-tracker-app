@@ -1,5 +1,4 @@
 import { BackgroundContainer, GoBackButton, ProgressBar, ProgressBarContainer } from "@/components/styles/signup.styles";
-import { Image } from "expo-image";
 import { Stack, usePathname, useRouter } from "expo-router";
 import { useMemo } from "react";
 
@@ -11,9 +10,10 @@ export default function SignupLayout() {
     const steps = {
       "/signup": 0.1,
       "/signup/phone-verification": 0.3,
-      "/signup/personal-information": 0.4,
-      "/signup/address": 0.6,
-      "/signup/pin-setup": 0.8
+      "/signup/account": 0.4,
+      "/signup/personal-information": 0.6,
+      "/signup/address": 0.8,
+      "/signup/pin-setup": 1
     };
 
     return steps[pathname as keyof typeof steps] || 0.2;
@@ -46,7 +46,14 @@ export default function SignupLayout() {
           }}
         />
         <Stack.Screen
+          name="account"
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen
           name="personal-information"
+
           options={{
             headerShown: false
           }}
