@@ -1,66 +1,50 @@
-import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
+import styled from 'styled-components/native';
+import { Alert } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { router } from 'expo-router';
+import { SignUpPersonalInformationTitle } from '@/components/styles/signup.styles';
+import PinVerificationForm from '@/components/pin-verification-form';
+
+
+const Container = styled.View`
+  flex: 1;
+  padding: 24px;
+  background-color: #fff;
+`;
+
+const Spacer = styled.View`
+  margin-top: 100px;
+  height: 20px;
+`;
+
+const SignOutText = styled.Text`
+  color: red;
+
+  margin-top: 20px;
+  text-align: center;
+`;
 
 export default function PinVerification() {
-  const [pin, setPin] = useState('');
   const { verifyPin, signOut } = useAuth();
 
-  const handlePinSubmit = async () => {
-    if (pin.length !== 4) {
-      Alert.alert('Invalid PIN', 'Please enter a 4-digit PIN');
-      return;
-    }
-
+  const handlePinConfirm = async (pin: string) => {
     const isValid = await verifyPin(pin);
     if (!isValid) {
       Alert.alert('Invalid PIN', 'Please try again');
-      setPin('');
+      return;
     }
+    router.push('/(tabs)');
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Enter PIN</Text>
-      <TextInput
-        style={styles.input}
-        value={pin}
-        onChangeText={setPin}
-        keyboardType="numeric"
-        maxLength={4}
-        secureTextEntry
-        placeholder="Enter 4-digit PIN"
-      />
-      <Text style={styles.signOut} onPress={signOut}>
-        Sign Out
-      </Text>
-    </View>
-  );
-}
+    <Container>
+      <SignUpPersonalInformationTitle>
+        Enter your PIN
+      </SignUpPersonalInformationTitle>
+      <Spacer />
+      <PinVerificationForm onPinConfirm={handlePinConfirm} />
+    </Container>
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  input: {
-    width: '80%',
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    fontSize: 18,
-  },
-  signOut: {
-    color: 'red',
-    marginTop: 20,
-  },
-}); 
+
+  );
+} 
