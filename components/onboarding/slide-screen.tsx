@@ -11,11 +11,13 @@ import { DotsContainer, Dot, FooterContainer, MutedActionButton, MutedActionButt
 import { useRouter } from 'expo-router';
 import { ActionButton, ActionButtonText } from '../styles/index.styles';
 import { useState } from 'react';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 
 const { width } = Dimensions.get('window');
 
 const SlideFooter = ({ currentSlide, scrollRef }: { currentSlide: number, scrollRef: React.RefObject<Animated.ScrollView> }) => {
   const router = useRouter();
+  const { setOnboardingComplete } = useOnboarding();
 
   const handleDotPress = (index: number) => {
     scrollRef.current?.scrollTo({
@@ -30,7 +32,8 @@ const SlideFooter = ({ currentSlide, scrollRef }: { currentSlide: number, scroll
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    await setOnboardingComplete(true);
     router.replace('/(auth)/signup');
   }
 
@@ -59,7 +62,10 @@ const SlideFooter = ({ currentSlide, scrollRef }: { currentSlide: number, scroll
 
 const GetStartedFooter = () => {
   const router = useRouter();
-  const handleGetStarted = () => {
+  const { setOnboardingComplete } = useOnboarding();
+
+  const handleGetStarted = async () => {
+    await setOnboardingComplete(true);
     router.replace('/(auth)/signup');
   }
 
