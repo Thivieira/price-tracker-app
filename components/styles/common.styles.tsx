@@ -15,7 +15,7 @@ export const AuthContentContainer = styled(View)`
 `;
 
 export const AuthTitle = styled(Text)`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 700;
   font-size: 36px;
@@ -28,7 +28,7 @@ export const AuthTitle = styled(Text)`
 `;
 
 export const AuthSubtitle = styled(Text)`
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -51,7 +51,7 @@ export const AuthLink = styled(TouchableOpacity)`
 `;
 
 export const AuthLinkText = styled(Text)`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 700;
   font-size: 16px;

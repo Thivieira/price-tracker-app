@@ -14,7 +14,7 @@ padding: 20px;
 `
 
 export const TitleText = styled(Text)`
-font-family: 'DMSans_700Bold';
+font-family: 'DMSans-Bold';
 font-style: normal;
 font-weight: 700;
 font-size: 42px;
@@ -47,7 +47,7 @@ background-color: #23EBC3;
 `
 
 export const ActionButtonText = styled(Text)`
-font-family: 'DMSans_700Bold';
+font-family: 'DMSans-Bold';
 font-style: normal;
 font-weight: 700;
 font-size: 18px;
@@ -65,7 +65,7 @@ display: block;
 `
 
 export const MutedActionButtonText = styled(Text)`
-font-family: 'DMSans_700Bold';
+font-family: 'DMSans-Bold';
 font-style: normal;
 font-weight: 700;
 font-size: 18px;

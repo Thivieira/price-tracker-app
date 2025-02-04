@@ -96,7 +96,7 @@ const StyledInput = styled.TextInput`
   flex: 1;
   padding-top: 20px;
   padding-left: 20px;
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -110,7 +110,7 @@ const AnimatedLabel = styled(Animated.Text)`
   left: 20px;
   right: 20px;
   height: 24px;
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

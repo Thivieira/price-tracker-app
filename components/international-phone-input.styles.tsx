@@ -40,14 +40,14 @@ export const phoneInputStyles: IPhoneInputStyles = {
   callingCode: {
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'DMSans-Bold',
     color: 'rgba(18, 3, 58, 1)',
     backgroundColor: '#fff',
   },
   input: {
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'DMSans-Bold',
     color: 'rgba(18, 3, 58, 1)',
     backgroundColor: '#fff',
   },
@@ -72,7 +72,7 @@ export const modalStyles: IModalStyles = {
     paddingHorizontal: 12,
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'DMSans-Bold',
     height: 46,
   },
   countryButton: {
@@ -85,7 +85,7 @@ export const modalStyles: IModalStyles = {
   noCountryText: {
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'DMSans-Bold',
     color: '#F3F3F3',
   },
   noCountryContainer: {},
@@ -97,12 +97,12 @@ export const modalStyles: IModalStyles = {
     color: '#F3F3F3',
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'DMSans-Bold',
   },
   countryName: {
     color: '#F3F3F3',
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'DMSans_700Bold',
+    fontFamily: 'DMSans-Bold',
   },
 }

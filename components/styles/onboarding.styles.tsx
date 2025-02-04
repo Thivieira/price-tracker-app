@@ -42,7 +42,7 @@ export const InfoContainer = styled(View)`
 `
 
 export const TitleText = styled(Text)`
-font-family: 'DMSans_700Bold';
+font-family: 'DMSans-Bold';
 font-style: normal;
 font-weight: 700;
 font-size: 36px;
@@ -54,7 +54,7 @@ color: rgba(18, 3, 58, 1);
 export const DescriptionText = styled(Text)`
 position: relative;
 top: 20px;
-font-family: 'DMSans_500Medium';
+font-family: 'DMSans-Medium';
 font-style: normal;
 font-weight: 500;
 font-size: 14px;
@@ -121,7 +121,7 @@ export const MutedActionButton = styled(TouchableOpacity)`
   text-align: center;
 `
 export const MutedActionButtonText = styled(Text)`
-font-family: 'DMSans_700Bold'; 
+font-family: 'DMSans-Bold'; 
 font-style: normal; 
 font-weight: 700; 
 font-size: 16px; 
@@ -137,7 +137,7 @@ export const NextActionButton = styled(TouchableOpacity)`
 `
 
 export const NextActionButtonText = styled(Text)`
-font-family: 'DMSans_700Bold';
+font-family: 'DMSans-Bold';
 font-style: normal;
 font-weight: 700;
 font-size: 16px;

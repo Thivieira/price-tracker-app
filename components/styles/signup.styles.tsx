@@ -69,7 +69,7 @@ export const PhoneFormContainer = styled(View)`
 `;
 
 export const PhoneFormTitle = styled(Text)`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 700;
   font-size: 36px;
@@ -90,7 +90,7 @@ export const PhoneFormAlreadyHaveAccountTextContainer = styled(View)`
 `;
 
 export const PhoneFormAlreadyHaveAccountText = styled(Text)`
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -109,7 +109,7 @@ export const PhoneFormAlreadyHaveAccountLink = styled(TouchableOpacity)`
 `;
 
 export const PhoneFormAlreadyHaveAccountLinkText = styled(Text)`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
@@ -128,7 +128,7 @@ export const PhoneFormTermsAndConditionsTextContainer = styled(View)`
 `;
 
 export const PhoneFormTermsAndConditionsText = styled(Text)`
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -144,7 +144,7 @@ export const PhoneFormTermsAndConditionsLink = styled(TouchableOpacity)`
 `;
 
 export const PhoneFormTermsAndConditionsLinkText = styled(Text)`
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -165,7 +165,7 @@ export const VerificationFormTitle = styled(PhoneFormTitle)`
 `;
 
 export const VerificationFormSubtitle = styled(PhoneFormTitle)`
-font-family: 'DMSans_500Medium';
+font-family: 'DMSans-Medium';
 font-style: normal;
 font-weight: 500;
 font-size: 14px;
@@ -191,7 +191,7 @@ export const VerificationFormUnitInput = styled(TextInput) <VerificationFormUnit
   border-width: 1px;
   border-color: ${props => props.isFocused ? 'rgba(18, 3, 58, 1)' : 'rgba(18, 3, 58, 0.1)'};
   font-size: 24px;
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   text-align: center;
   color: #12033A;
   background-color: #fff;
@@ -212,7 +212,7 @@ export const VerificationFormAlreadyHaveAccountLink = styled(TouchableOpacity)`
 `;
 
 export const VerificationFormAlreadyHaveAccountLinkText = styled(Text)`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 700;
   font-size: 16px;
@@ -228,7 +228,7 @@ export const SignUpPersonalInformationContainer = styled(View)`
 `;
 
 export const SignUpPersonalInformationTitle = styled(Text)`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 700;
   font-size: 36px;
@@ -239,7 +239,7 @@ export const SignUpPersonalInformationTitle = styled(Text)`
 `;
 
 export const SignUpPersonalInformationSubtitle = styled(Text)`
-  font-family: 'DMSans_500Medium';
+  font-family: 'DMSans-Medium';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

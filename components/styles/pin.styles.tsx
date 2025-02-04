@@ -45,7 +45,7 @@ export const NumButton = styled.TouchableOpacity`  width: 30%;
 export const NumText = styled.Text`
   font-size: 24px;
   color: rgba(18, 3, 58, 1);
-  font-family: 'DMSans_400Regular';
+  font-family: 'DMSans-Regular';
   font-weight: 400;
 
 `;
@@ -71,7 +71,7 @@ export const DeleteIcon = styled(ExpoImage)`
 `;
 
 export const ResetText = styled.Text`
-  font-family: 'DMSans_700Bold';
+  font-family: 'DMSans-Bold';
   font-weight: 700;
   font-size: 17px;
   line-height: 26px;
