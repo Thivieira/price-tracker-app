@@ -1,8 +1,10 @@
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { BackgroundContainer, TitleText, ButtonContainer, ActionButton, MutedActionButton, ImageContainer, MutedActionButtonText, ActionButtonText } from '../components/styles/index.styles';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 
 export default function Page() {
+  const { setOnboardingComplete } = useOnboarding();
 
   const onGetStarted = () => {
     router.push('/onboarding');
@@ -15,7 +17,11 @@ export default function Page() {
   useEffect(() => {
     // if already logged in, go to tabs
     // router.replace('/(tabs)');
+
+    // utility to clear onboarding complete
+    // setOnboardingComplete(false);
   }, []);
+
 
   return (
     <BackgroundContainer>
