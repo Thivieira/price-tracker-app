@@ -4,7 +4,7 @@ import FloatingLabelInput from './floating-label-input'
 import { useForm } from 'react-hook-form';
 
 interface FormData {
-  email: string;
+  username: string;
   password: string;
 }
 export default function SignInForm() {
@@ -12,11 +12,12 @@ export default function SignInForm() {
   return (
     <SignInFormContainer>
       <FloatingLabelInput
-        label="Email"
-        placeholder="Email"
-        name="email"
+        label="Username"
+        placeholder="Username"
+        name="username"
         control={control}
         rules={{ required: true }}
+
       />
       <FloatingLabelInput
         label="Password"
