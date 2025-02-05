@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { router } from 'expo-router';
 import { SignUpPersonalInformationTitle } from '@/components/styles/signup.styles';
 import PinVerificationForm from '@/components/pin-verification-form';
+import { useEffect } from 'react';
 
 
 const Container = styled.View`
@@ -17,15 +18,15 @@ const Spacer = styled.View`
   height: 20px;
 `;
 
-const SignOutText = styled.Text`
-  color: red;
-
-  margin-top: 20px;
-  text-align: center;
-`;
-
 export default function PinVerification() {
-  const { verifyPin, signOut } = useAuth();
+  const { verifyPin, isPinVerified } = useAuth();
+
+  useEffect(() => {
+    if (isPinVerified) {
+      router.push('/(tabs)');
+    }
+  }, [isPinVerified]);
+
 
   const handlePinConfirm = async (pin: string) => {
     const isValid = await verifyPin(pin);

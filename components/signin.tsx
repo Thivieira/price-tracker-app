@@ -40,7 +40,7 @@ export default function SignInForm() {
     console.log(data);
     try {
       await signIn(data.username, data.password);
-      router.push('/pin-verification');
+      router.replace('/pin-verification');
     } catch (error) {
       console.error(error);
       Dialog.show({

@@ -15,7 +15,6 @@ import ErrorMessage from './error-message';
 const Container = styled.View<{ hasError?: boolean }>`
   height: ${props => props.hasError ? '88px' : '64px'};
   flex: none;
-  order: 1;
   flex-grow: 0;
   margin: 8px 0;
 `;

@@ -14,7 +14,9 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isPinVerified: boolean;
+  isLoggedIn: boolean;
 }
+
 
 
 interface AuthContextType {
@@ -22,10 +24,12 @@ interface AuthContextType {
   accessToken: string | null;
   refreshToken: string | null;
   isPinVerified: boolean;
+  isLoggedIn: boolean;
   isLoading: boolean;
   signIn: (username_or_email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   verifyPin: (pin: string) => Promise<boolean>;
+
 
   setupPin: (pin: string) => Promise<void>;
 }
@@ -58,8 +62,8 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const refreshToken = await AsyncStorage.getItem('refreshToken');
-        const response = await axios.post(
-          `${process.env.EXPO_PUBLIC_API_URL}/auth/refresh`,
+        const response = await api.post(
+          '/auth/refresh',
           {},
           {
             headers: {
@@ -90,8 +94,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     accessToken: null,
     refreshToken: null,
     isPinVerified: false,
+    isLoggedIn: false,
   });
   const [isLoading, setIsLoading] = useState(true);
+
 
 
   useEffect(() => {
@@ -123,10 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           user,
           accessToken,
           refreshToken,
-          isPinVerified: false
+          isPinVerified: false,
+          isLoggedIn: true,
         });
         router.replace('/pin-verification');
       }
+
     } catch (error) {
       console.error('Error loading stored auth:', error);
     } finally {
@@ -136,7 +144,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (accessToken: string) => {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get('/auth/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
       const user = response.data;
       await AsyncStorage.setItem('user', JSON.stringify(user));
       return user;
@@ -148,43 +160,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (username_or_email: string, password: string) => {
     try {
-      // Add request timeout and more detailed error logging
       const response = await api.post('/auth/login',
         { username_or_email, password },
         {
-          timeout: 10000, // 10 second timeout
-          validateStatus: (status) => status < 500 // Allow 4xx errors to be handled
+          timeout: 10000,
+          validateStatus: (status) => status < 500
         }
       );
 
       const { accessToken, refreshToken } = response.data;
 
-      // Fetch user profile after successful login
-      const user = await fetchUserProfile(accessToken);
-
+      // Store tokens first
       await Promise.all([
         AsyncStorage.setItem('accessToken', accessToken),
         AsyncStorage.setItem('refreshToken', refreshToken),
       ]);
 
-      setState({ user, accessToken, refreshToken, isPinVerified: false });
-      router.replace('/pin-verification');
+      // Update state and axios defaults before fetching profile
+      api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+      // Fetch user profile after token setup
+      const user = await fetchUserProfile(accessToken);
+
+      setState({ user, accessToken, refreshToken, isPinVerified: false, isLoggedIn: true });
+
     } catch (error) {
-      // More detailed error logging
       if (axios.isAxiosError(error)) {
-        console.error('Axios error details:', {
+        console.error('Authentication error:', {
           message: error.message,
-          code: error.code,
-          config: {
-            url: error.config?.url,
-            method: error.config?.method,
-            baseURL: error.config?.baseURL,
-          },
-          response: error.response?.data
+          status: error.response?.status,
+          data: error.response?.data
         });
 
+        // Clear any partial auth data on failure
+        await clearAuthData();
+
+        if (error.response?.status === 401) {
+          throw new Error('Invalid credentials. Please try again.');
+        }
         if (!error.response) {
-          throw new Error('Unable to reach the server. Please check your internet connection and try again.');
+          throw new Error('Network error. Please check your connection.');
         }
       }
       throw error;
@@ -194,7 +209,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       await clearAuthData();
-      setState({ user: null, accessToken: null, refreshToken: null, isPinVerified: false });
+      setState({ user: null, accessToken: null, refreshToken: null, isPinVerified: false, isLoggedIn: false });
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -231,11 +246,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
         isPinVerified: state.isPinVerified,
+        isLoggedIn: state.isLoggedIn,
         isLoading,
         signIn,
         signOut,
         verifyPin,
         setupPin,
+
 
       }}
     >
