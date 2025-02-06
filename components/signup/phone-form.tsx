@@ -8,6 +8,7 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 import { ICountry } from 'react-native-international-phone-number';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
+import validatePhoneNumber from '@/utils/validate-phone-number';
 import styled from 'styled-components/native';
 
 interface PhoneFormProps {
@@ -66,10 +67,8 @@ export default function PhoneForm({ onNext }: PhoneFormProps) {
     defaultValues: {
       phoneNumber: ''
     },
-    mode: 'all'
+    mode: 'onBlur'
   });
-
-  console.log(errors, 'errors');
 
   const [selectedCountry, setSelectedCountry] = useState<ICountry>();
 
@@ -77,29 +76,8 @@ export default function PhoneForm({ onNext }: PhoneFormProps) {
     return selectedCountry?.callingCode.substring(1); // remove the +
   }, [selectedCountry]);
 
-  const validatePhoneNumber = useCallback((value: string) => {
-    try {
-      const phoneNumber = parsePhoneNumberWithError(value, { defaultCallingCode: callingCode });
-
-
-      if (!phoneNumber?.isValid()) {
-        return 'Please enter a valid phone number';
-      }
-
-      const nationalNumber = phoneNumber.nationalNumber;
-      if (!nationalNumber || nationalNumber.length < 6) {
-        return 'Phone number is too short';
-      }
-
-      if (nationalNumber.length > 15) {
-        return 'Phone number is too long';
-      }
-
-      return true;
-    } catch (error) {
-      console.log(error, 'error');
-      return 'Please enter a valid phone number';
-    }
+  const validatePhoneNumberValidation = useCallback((value: string) => {
+    return validatePhoneNumber(value, callingCode);
   }, [callingCode]);
 
   const onSubmit: SubmitHandler<PhoneFormValues> = useCallback((data) => {
@@ -122,7 +100,7 @@ export default function PhoneForm({ onNext }: PhoneFormProps) {
         name="phoneNumber"
         rules={{
           required: 'Phone number is required',
-          validate: validatePhoneNumber
+          validate: validatePhoneNumberValidation
         }}
         error={errors.phoneNumber?.message}
         country={selectedCountry}

@@ -1,15 +1,11 @@
-import React, { useState } from 'react'
-import { SignUpPersonalInformationFormContainer } from '../styles/signup.styles'
-import FloatingLabelInput from '../floating-label-input'
-import { useForm } from 'react-hook-form';
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { SignUpPersonalInformationFormContainer } from '../styles/signup.styles';
+import FloatingLabelInput from '../floating-label-input';
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  birthDate: string;
-}
 export default function PersonalInformationForm() {
-  const { control } = useForm<FormData>();
+  const { control, formState: { errors } } = useFormContext();
+
   return (
     <SignUpPersonalInformationFormContainer>
       <FloatingLabelInput
@@ -17,22 +13,25 @@ export default function PersonalInformationForm() {
         placeholder="First name"
         name="firstName"
         control={control}
-        rules={{ required: true }}
+        error={errors.firstName}
       />
       <FloatingLabelInput
+
         label="Last name"
         placeholder="Last name"
         name="lastName"
         control={control}
-        rules={{ required: true }}
+        error={errors.lastName}
       />
       <FloatingLabelInput
+
         label="Birth date"
-        placeholder="Birth date"
+        placeholder="YYYY-MM-DD"
         name="birthDate"
         control={control}
-        rules={{ required: true }}
+        error={errors.birthDate}
       />
     </SignUpPersonalInformationFormContainer>
-  )
+
+  );
 }

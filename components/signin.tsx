@@ -9,7 +9,7 @@ import styled from 'styled-components/native'
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema } from '@/schemas/signin.schema';
-import { ALERT_TYPE, AlertNotificationRoot, Dialog } from 'react-native-alert-notification';
+import Toast from 'react-native-toast-message';
 
 type FormData = z.infer<typeof signInSchema>;
 
@@ -26,7 +26,7 @@ export default function SignInForm() {
       password: ''
     },
     resolver: zodResolver(signInSchema),
-    mode: 'all'
+    mode: 'onBlur'
   });
 
   const isValid = useMemo(() => {
@@ -43,17 +43,25 @@ export default function SignInForm() {
       router.replace('/pin-verification');
     } catch (error) {
       console.error(error);
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: 'Error',
-        textBody: 'Username or password are incorrect.',
-        button: 'Close',
-      })
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Username or password are incorrect.'
+      });
+
+
+
+      // Dialog.show({
+      //   type: ALERT_TYPE.DANGER,
+      //   title: 'Error',
+      //   textBody: 'Username or password are incorrect.',
+      //   button: 'Close',
+      // })
     }
   };
 
   return (
-    <AlertNotificationRoot>
+    <Fragment>
       <SignInFormContainer>
         <FloatingLabelInput
           label="Username"
@@ -75,8 +83,7 @@ export default function SignInForm() {
       <ButtonContainer>
         <SignInFormNextButton disabled={!isValid} isLoading={isSubmitting} onPress={handleSubmit(onSubmit)} />
       </ButtonContainer>
-    </AlertNotificationRoot>
-
+    </Fragment>
   )
 
 }

@@ -1,35 +1,37 @@
-import React, { useState } from 'react'
-import { SignUpPersonalInformationFormContainer } from '../styles/signup.styles'
-import FloatingLabelInput from '../floating-label-input'
-import { useForm } from 'react-hook-form';
-
-interface FormData {
-  username: string;
-  password: string;
-}
+import React from 'react';
+import { useFormContext } from 'react-hook-form';
+import { SignUpPersonalInformationFormContainer } from '../styles/signup.styles';
+import FloatingLabelInput from '../floating-label-input';
 
 export default function AccountForm() {
-  const { control } = useForm<FormData>();
+  const { control, formState: { errors } } = useFormContext();
+  console.log(errors);
+
   return (
     <SignUpPersonalInformationFormContainer>
-
       <FloatingLabelInput
         label="Username"
         placeholder="Username"
         name="username"
         control={control}
-        rules={{ required: true }}
+        error={errors.username}
       />
       <FloatingLabelInput
+        control={control}
         label="Password"
         placeholder="Password"
         name="password"
-        control={control}
         isPassword
-
-        rules={{ required: true }}
+        error={errors.password}
+      />
+      <FloatingLabelInput
+        control={control}
+        label="Confirm Password"
+        placeholder="Confirm Password"
+        name="password_confirmation"
+        isPassword
+        error={errors.password_confirmation}
       />
     </SignUpPersonalInformationFormContainer>
-
-  )
+  );
 }

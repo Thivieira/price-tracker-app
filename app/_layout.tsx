@@ -10,6 +10,8 @@ import {
   DMSans_500Medium,
   DMSans_700Bold
 } from '@expo-google-fonts/dm-sans';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@/components/toast';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -42,6 +44,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="reset-to-root" options={{ headerShown: false }} />
         </Stack>
+        <Toast config={toastConfig} />
       </OnboardingProvider>
     </AuthProvider>
   );

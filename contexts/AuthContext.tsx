@@ -26,16 +26,21 @@ interface AuthContextType {
   isPinVerified: boolean;
   isLoggedIn: boolean;
   isLoading: boolean;
+  signUp: (formData: any) => Promise<any>;
   signIn: (username_or_email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   verifyPin: (pin: string) => Promise<boolean>;
-
-
-  setupPin: (pin: string) => Promise<void>;
+  // setupPin: (pin: string) => Promise<void>;
+  sendOtp: (phone: string) => Promise<boolean>;
+  resendOtp: (phone: string) => Promise<{ success: boolean; message: string }>;
+  verifyOtp: (phone: string, otp: string) => Promise<boolean>;
 }
 
+
+
+
 // Create an axios instance with default config
-const api = axios.create({
+export const api = axios.create({
   baseURL: process.env.EXPO_PUBLIC_API_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -111,9 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       delete api.defaults.headers.common['Authorization'];
     }
-
   }, [state.accessToken]);
-
 
   const loadStoredAuth = async () => {
     try {
@@ -157,6 +160,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
+
+  const signUp = async (formData: any) => {
+    try {
+      const response = await api.post('/auth/register',
+        formData,
+        {
+          timeout: 10000,
+          validateStatus: (status) => status < 500
+        }
+      );
+
+      const { accessToken, refreshToken } = response.data;
+
+      // Store tokens first
+      await Promise.all([
+        AsyncStorage.setItem('accessToken', accessToken),
+        AsyncStorage.setItem('refreshToken', refreshToken),
+      ]);
+
+      // Update state and axios defaults before fetching profile
+      api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+      // Fetch user profile after token setup
+      const user = await fetchUserProfile(accessToken);
+
+      setState({ user, accessToken, refreshToken, isPinVerified: true, isLoggedIn: true });
+
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Authentication error:', {
+          message: error.message,
+          status: error.response?.status,
+          data: error.response?.data
+        });
+
+        // Clear any partial auth data on failure
+        await clearAuthData();
+
+        if (error.response?.status === 401) {
+          throw new Error('Invalid credentials. Please try again.');
+        }
+        if (!error.response) {
+          throw new Error('Network error. Please check your connection.');
+        }
+      }
+      throw error;
+    }
+  }
+
 
   const signIn = async (username_or_email: string, password: string) => {
     try {
@@ -228,14 +280,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const setupPin = async (pin: string) => {
+  // const setupPin = async (pin: string) => {
+  //   try {
+  //     await api.post('/auth/setup-pin', { pin });
+  //     setState(prev => ({ ...prev, isPinVerified: true }));
+  //     router.replace('/(tabs)');
+  //   } catch (error) {
+  //     console.error('PIN setup error:', error);
+  //     throw error;
+  //   }
+  // };
+
+  const sendOtp = async (phone: string) => {
     try {
-      await api.post('/auth/setup-pin', { pin });
-      setState(prev => ({ ...prev, isPinVerified: true }));
-      router.replace('/(tabs)');
+      await api.post('/auth/otp', { phone });
+      return true;
     } catch (error) {
-      console.error('PIN setup error:', error);
-      throw error;
+      console.error('OTP sending error:', error);
+      return false;
+    }
+  }
+
+  const resendOtp = async (phone: string) => {
+    try {
+      await api.post('/auth/otp/resend', { phone });
+      return { success: true, message: 'OTP sent successfully.' };
+    } catch (error) {
+      console.error('OTP sending error:', error);
+      return { success: false, message: error?.response?.data?.message ?? 'Failed to send OTP.' };
+    }
+  }
+
+  const verifyOtp = async (phone: string, otp: string) => {
+    try {
+      await api.post('/auth/otp/verify', { phone, otp });
+      return true;
+    } catch (error) {
+      console.error('OTP verification error:', error);
+      return false;
     }
   };
 
@@ -248,14 +330,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isPinVerified: state.isPinVerified,
         isLoggedIn: state.isLoggedIn,
         isLoading,
+        signUp,
         signIn,
         signOut,
         verifyPin,
-        setupPin,
-
-
+        // setupPin,
+        sendOtp,
+        resendOtp,
+        verifyOtp,
       }}
     >
+
       {children}
     </AuthContext.Provider>
   );

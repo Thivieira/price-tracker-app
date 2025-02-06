@@ -24,7 +24,7 @@ const InputContainer = styled.View<{ isFocused: boolean; hasError?: boolean }>`
   left: 0;
   right: 0;
   top: 0;
-  bottom: ${props => props.hasError ? '24px' : '0'};
+  bottom: ${props => props.hasError ? '32px' : '0'};
   background: #FFFFFF;
   border: 1px solid ${props =>
     props.hasError
@@ -83,6 +83,7 @@ interface FloatingLabelInputProps<T extends FieldValues> extends Omit<TextInputP
   isPassword?: boolean;
   error?: FieldErrors<T>;
 }
+
 
 const FloatingLabelInput = <T extends FieldValues>({
   label,

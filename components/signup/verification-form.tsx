@@ -1,49 +1,26 @@
 import React, { useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
 import { VerificationFormTitle, VerificationFormContainer, VerificationFormSubtitle, VerificationFormUnitInput, VerificationFormUnitInputContainer, PhoneFormAlreadyHaveAccountLink, PhoneFormAlreadyHaveAccountLinkText, VerificationFormAlreadyHaveAccountLinkText, VerificationFormAlreadyHaveAccountLink } from '@/components/styles/signup.styles';
-import { router } from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
+import Toast from 'react-native-toast-message';
 
 interface VerificationFormProps {
-  onComplete?: (code: string) => void;
-  phone?: string;
+  onComplete?: (code: string) => Promise<void>;
+  phone: string;
 }
 
-const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> = ({ onComplete }) => {
+const VerificationFormInput: React.FC<{ onComplete?: (code: string) => Promise<void> }> = ({ onComplete }) => {
   const [code, setCode] = useState(['', '', '', '']);
   const [focusedIndex, setFocusedIndex] = useState(0);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [error, setError] = useState('');
+
   const inputRefs = useRef<(TextInput | null)[]>([null, null, null, null]);
 
   const verifyCode = async (verificationCode: string) => {
-    setIsVerifying(true);
-    setError('');
-
-
-
     try {
-      // // Replace this with your actual API call
-      // const response = await fetch('/api/verify-code', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ code: verificationCode }),
-      // });
-
-      // if (response.ok) {
-      //   router.push('/(auth)/signup/personal-information');
-      // } else {
-      //   setError('Invalid verification code');
-      //   // Reset the code inputs
-      //   setCode(['', '', '', '']);
-      //   inputRefs.current[0]?.focus();
-      // }
-      onComplete?.(verificationCode);
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setIsVerifying(false);
+      await onComplete?.(verificationCode);
+    } catch (e) {
+      setCode(['', '', '', '']);
+      inputRefs.current[0]?.focus();
     }
   };
 
@@ -57,8 +34,8 @@ const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> =
       }
     });
 
-    if (onComplete) {
-      onComplete(digits.join(''));
+    if (verifyCode) {
+      verifyCode(digits.join(''));
     }
   };
 
@@ -82,10 +59,9 @@ const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> =
         inputRefs.current[index + 1]?.focus();
       } else if (index === 3) {
         const completeCode = [...newCode.slice(0, 3), text].join('');
-        if (onComplete) {
-          onComplete(completeCode);
+        if (verifyCode) {
+          verifyCode(completeCode);
         }
-        verifyCode(completeCode);
       }
     }
   };
@@ -109,9 +85,9 @@ const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> =
       {code.map((digit, index) => (
         <VerificationFormUnitInput
           key={index}
-          ref={ref => inputRefs.current[index] = ref}
+          ref={(ref: TextInput | null) => inputRefs.current[index] = ref}
           value={digit}
-          onChangeText={text => handleChange(text, index)}
+          onChangeText={(text: string) => handleChange(text, index)}
           maxLength={1}
           keyboardType="numeric"
           selectTextOnFocus
@@ -126,11 +102,25 @@ const VerificationFormInput: React.FC<{ onComplete?: (code: string) => void }> =
 };
 
 export default function VerificationForm({ onComplete, phone }: VerificationFormProps) {
+  const { resendOtp } = useAuth();
 
-  const onResend = () => {
-    console.log('Resend');
+  const onResend = async () => {
+    try {
+      await resendOtp(phone);
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'OTP sent successfully.'
+
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to send OTP.'
+      });
+    }
   };
-
 
   return (
     <VerificationFormContainer>

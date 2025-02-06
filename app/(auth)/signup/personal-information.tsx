@@ -3,9 +3,18 @@ import { SignUpFormNextButton, SignUpPersonalInformationContainer, SignUpPersona
 import React from 'react'
 import { View } from 'react-native'
 import { useRouter } from 'expo-router'
+import { useSignupWizard } from '@/contexts/SignupWizardContext'
 
 export default function PersonalInformation() {
   const router = useRouter();
+  const { methods: { trigger } } = useSignupWizard();
+
+  const handleNext = async () => {
+    const isValid = await trigger(['firstName', 'lastName', 'birthDate']);
+    if (isValid) {
+      router.push('/signup/address');
+    }
+  };
 
   return (
     <SignUpPersonalInformationContainer>
@@ -21,7 +30,7 @@ export default function PersonalInformation() {
         alignSelf: 'flex-end',
         marginTop: 24
       }}>
-        <SignUpFormNextButton onPress={() => router.push('/signup/address')} />
+        <SignUpFormNextButton onPress={handleNext} />
       </View>
     </SignUpPersonalInformationContainer>
   )

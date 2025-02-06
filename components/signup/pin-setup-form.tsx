@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useFormContext } from 'react-hook-form';
 import { Image } from 'expo-image';
 import {
   ConfirmButtonText,
@@ -19,19 +20,25 @@ interface PinSetupFormProps {
 
 export default function PinSetupForm({ onPinConfirm }: PinSetupFormProps) {
   const [pin, setPin] = useState<string>('');
+  const { setValue } = useFormContext();
 
   const handleNumberPress = (num: string) => {
     if (pin.length < 4) {
-      setPin(prev => prev + num);
+      const newPin = pin + num;
+      setPin(newPin);
+      setValue('pin', newPin, { shouldValidate: true });
     }
   };
 
   const handleBackspace = () => {
-    setPin(prev => prev.slice(0, -1));
+    const newPin = pin.slice(0, -1);
+    setPin(newPin);
+    setValue('pin', newPin, { shouldValidate: true });
   };
 
   const handleReset = () => {
     setPin('');
+    setValue('pin', '', { shouldValidate: true });
   };
 
   const handleConfirm = () => {
@@ -67,9 +74,6 @@ export default function PinSetupForm({ onPinConfirm }: PinSetupFormProps) {
           <DeleteIcon
             source={require('@/assets/images/delete.svg')}
             contentFit="contain"
-            onError={(error) => {
-              console.error('Delete icon failed to load:', error);
-            }}
           />
         </NumButton>
       </Numpad>
@@ -82,7 +86,7 @@ export default function PinSetupForm({ onPinConfirm }: PinSetupFormProps) {
         onPress={handleConfirm}
         disabled={pin.length !== 4}
       >
-        <ConfirmButtonText>Set up PIN</ConfirmButtonText>
+        <ConfirmButtonText>Continue</ConfirmButtonText>
       </ConfirmButton>
     </Container>
   );
