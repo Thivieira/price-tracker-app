@@ -9,6 +9,10 @@ import { Control, Controller, FieldErrors, FieldValues, Path } from 'react-hook-
 import { TextInputProps } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import ErrorMessage from './error-message';
+import DateMaskInput from './date-mask-input';
+
+
+
 
 
 
@@ -81,9 +85,11 @@ interface FloatingLabelInputProps<T extends FieldValues> extends Omit<TextInputP
   control: Control<T>;
   rules?: object;
   isPassword?: boolean;
+  showEye?: boolean;
+  isDate?: boolean;
+  isNumeric?: boolean;
   error?: FieldErrors<T>;
 }
-
 
 const FloatingLabelInput = <T extends FieldValues>({
   label,
@@ -91,6 +97,9 @@ const FloatingLabelInput = <T extends FieldValues>({
   name,
   rules,
   isPassword,
+  isDate,
+  showEye = true,
+  isNumeric,
   ...props
 }: FloatingLabelInputProps<T>) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -114,6 +123,16 @@ const FloatingLabelInput = <T extends FieldValues>({
     }
   };
 
+  const handleChangeText = (text: string, onChange: (...event: any[]) => void) => {
+    if (isNumeric) {
+      // Remove any non-digit characters
+      const numericValue = text.replace(/\D/g, '');
+      onChange(numericValue);
+    } else {
+      onChange(text);
+    }
+  };
+
   return (
     <Controller
       name={name}
@@ -125,22 +144,38 @@ const FloatingLabelInput = <T extends FieldValues>({
             <AnimatedLabel style={animatedLabelStyle}>
               {label}
             </AnimatedLabel>
-            <StyledInput
-              {...props}
-              value={value}
-              onChangeText={onChange}
-              onFocus={handleFocus}
-              onBlur={() => {
-                onBlur();
-                handleBlur(!!value);
-              }}
-              placeholder=""
-              selectionColor={'rgba(18, 3, 58, 1)'}
-              placeholderTextColor={'rgba(18, 3, 58, 1)'}
-              cursorColor={'rgba(18, 3, 58, 1)'}
-              secureTextEntry={isPassword && !showPassword}
-            />
-            {isPassword && (
+            {isDate ? (
+              <DateMaskInput
+                {...props}
+                value={value}
+                onChange={(newValue, isValid) => {
+                  onChange(newValue);
+                }}
+                onFocus={handleFocus}
+                onBlur={() => {
+                  onBlur();
+                  handleBlur(!!value);
+                }}
+              />
+            ) : (
+              <StyledInput
+                {...props}
+                value={value}
+                onChangeText={(text) => handleChangeText(text, onChange)}
+                onFocus={handleFocus}
+                onBlur={() => {
+                  onBlur();
+                  handleBlur(!!value);
+                }}
+                placeholder=""
+                selectionColor={'rgba(18, 3, 58, 1)'}
+                placeholderTextColor={'rgba(18, 3, 58, 1)'}
+                cursorColor={'rgba(18, 3, 58, 1)'}
+                secureTextEntry={isPassword && !showPassword}
+                keyboardType={isNumeric ? 'numeric' : 'default'}
+              />
+            )}
+            {isPassword && showEye && (
               <IconContainer onPress={() => setShowPassword(!showPassword)}>
                 <Ionicons
                   name={showPassword ? 'eye-off' : 'eye'}

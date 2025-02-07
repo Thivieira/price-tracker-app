@@ -11,7 +11,8 @@ const signupSchema = z.object({
     .min(8, 'Password must be at least 8 characters')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
       'Password must contain uppercase, lowercase, number and special character'),
-  password_confirmation: z.string().min(1, "Password confirmation is required"),
+  password_confirmation: z.string()
+    .min(1, 'Password confirmation is required'),
   // Personal Information
   firstName: z.string().min(2, 'First name is required'),
   lastName: z.string().min(2, 'Last name is required'),
@@ -25,10 +26,6 @@ const signupSchema = z.object({
   // PIN
   pin: z.string().length(4, 'PIN must be 4 digits')
 })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: "Passwords do not match",
-    path: ["password_confirmation"]
-  });
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
@@ -48,7 +45,14 @@ export function SignupWizardProvider({ children }: { children: React.ReactNode }
     resolver: zodResolver(signupSchema),
     mode: 'onChange',
     criteriaMode: 'all',
-    shouldUnregister: false
+    shouldUnregister: false,
+    defaultValues: {
+      phone: '',
+      username: '',
+      password: '',
+      password_confirmation: '',
+      // ... other default values
+    }
   });
 
   const totalSteps = 4; // Account, Personal Info, Address, PIN

@@ -24,12 +24,12 @@ export default function PersonalInformationForm() {
         error={errors.lastName}
       />
       <FloatingLabelInput
-
-        label="Birth date"
-        placeholder="YYYY-MM-DD"
+        label="Date of birth ( MM / DD / YYYY )"
+        placeholder="Date of birth ( MM / DD / YYYY )"
         name="birthDate"
         control={control}
         error={errors.birthDate}
+        isDate
       />
     </SignUpPersonalInformationFormContainer>
 

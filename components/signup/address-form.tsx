@@ -9,7 +9,6 @@ export default function AddressForm() {
   return (
     <SignUpPersonalInformationFormContainer>
       <FloatingLabelInput
-
         label="Street Address"
         placeholder="Street Address"
         name="streetAddress"
@@ -43,8 +42,9 @@ export default function AddressForm() {
         name="zipCode"
         control={control}
         error={errors.zipCode}
+        isNumeric={true}
+        keyboardType="numeric"
       />
     </SignUpPersonalInformationFormContainer>
-
   )
 }

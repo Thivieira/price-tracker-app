@@ -5,7 +5,6 @@ import FloatingLabelInput from '../floating-label-input';
 
 export default function AccountForm() {
   const { control, formState: { errors } } = useFormContext();
-  console.log(errors);
 
   return (
     <SignUpPersonalInformationFormContainer>
@@ -17,21 +16,23 @@ export default function AccountForm() {
         error={errors.username}
       />
       <FloatingLabelInput
-        control={control}
         label="Password"
         placeholder="Password"
         name="password"
+        control={control}
         isPassword
         error={errors.password}
       />
       <FloatingLabelInput
-        control={control}
         label="Confirm Password"
         placeholder="Confirm Password"
         name="password_confirmation"
+        control={control}
         isPassword
+        showEye={false}
         error={errors.password_confirmation}
       />
     </SignUpPersonalInformationFormContainer>
+
   );
 }
