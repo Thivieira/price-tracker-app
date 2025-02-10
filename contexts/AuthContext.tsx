@@ -3,10 +3,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import axios from 'axios';
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
+export interface User {
+  id: number
+  phone: string
+  email: string | null
+  username: string
+  first_name: string
+  last_name: string
+  birthdate: string
+  street_address: string
+  unit_number: string | null
+  city: string
+  region: string
+  zip_code: string
 }
 
 interface AuthState {
@@ -152,7 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           Authorization: `Bearer ${accessToken}`
         }
       });
-      const user = response.data;
+      const user = response.data?.user;
       await AsyncStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error) {
@@ -163,51 +172,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (formData: any) => {
     try {
-      const response = await api.post('/auth/register',
-        formData,
-        {
-          timeout: 10000,
-          validateStatus: (status) => status < 500
-        }
-      );
+      const response = await api.post('/auth/register', formData);
 
+      // Check if response exists and has a status code
+      if (!response || !response.data) {
+        throw new Error('No response received from server');
+      }
+
+      // Check response status
+      if (response.status !== 200 && response.status !== 201) {
+        throw new Error(`Registration failed with status: ${response.status}`);
+      }
+
+      // Validate response data
       const { accessToken, refreshToken } = response.data;
+      if (!accessToken || !refreshToken) {
+        throw new Error('Invalid server response: Missing authentication tokens');
+      }
 
-      // Store tokens first
+      // Store tokens
       await Promise.all([
         AsyncStorage.setItem('accessToken', accessToken),
         AsyncStorage.setItem('refreshToken', refreshToken),
       ]);
 
-      // Update state and axios defaults before fetching profile
+      // Update API headers
       api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
-      // Fetch user profile after token setup
+      // Fetch user profile
       const user = await fetchUserProfile(accessToken);
+      if (!user) {
+        throw new Error('Failed to fetch user profile');
+      }
 
-      setState({ user, accessToken, refreshToken, isPinVerified: true, isLoggedIn: true });
+      // Update state
+      setState({
+        user,
+        accessToken,
+        refreshToken,
+        isPinVerified: true,
+        isLoggedIn: true
+      });
+
+      return { success: true };
 
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('Authentication error:', {
-          message: error.message,
+      // Log detailed error information
+      console.error('Signup error:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        response: axios.isAxiosError(error) ? {
           status: error.response?.status,
           data: error.response?.data
-        });
+        } : undefined
+      });
 
-        // Clear any partial auth data on failure
-        await clearAuthData();
+      // Clear any partial auth data
+      await clearAuthData();
 
-        if (error.response?.status === 401) {
-          throw new Error('Invalid credentials. Please try again.');
-        }
+      // Handle specific error cases
+      if (axios.isAxiosError(error)) {
         if (!error.response) {
           throw new Error('Network error. Please check your connection.');
         }
+        if (error.response.status === 422) {
+          throw new Error(error.response.data.message || 'Validation failed. Please check your input.');
+        }
+        if (error.response.status === 409) {
+          throw new Error('User already exists with these credentials.');
+        }
+        if (error.response.data?.message) {
+          throw new Error(error.response.data.message);
+        }
       }
+
       throw error;
     }
-  }
+  };
 
 
   const signIn = async (username_or_email: string, password: string) => {

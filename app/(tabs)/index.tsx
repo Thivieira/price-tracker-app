@@ -1,55 +1,27 @@
-import { Button, StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import SearchBar from '@/components/search-bar';
+import { BackgroundImage, ExchangeBtn, ScreenContainer, TitleText } from '@/components/styles/tabs.styles';
+import BookmarksView from '@/components/bookmarks-view';
 import { useAuth } from '@/contexts/AuthContext';
-import { router } from 'expo-router';
 
 export default function TabOneScreen() {
-  const { signOut } = useAuth();
-  const clearAsyncStorage = async () => {
-    console.log('Clearing Async Storage');
-    await AsyncStorage.clear();
+  const { user } = useAuth();
 
-    const getAllKeys = await AsyncStorage.getAllKeys();
-    console.log('Async Storage cleared', getAllKeys);
+  const handleExchange = () => {
+    console.log('Exchange');
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One test</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-      <Button title="Clear Async Storage" onPress={clearAsyncStorage} />
-      <View style={{ marginTop: 20 }}>
-        <Button title="Sign Out" onPress={async () => {
-          try {
-            console.log('Signing out');
-            await signOut();
-            router.replace('/reset-to-root');
-          } catch (error) {
-            console.error('Error during sign out:', error);
-          }
-        }} />
-      </View>
-    </View >
+    <ScreenContainer>
+      <BackgroundImage
+        source={require('@/assets/images/tabs/top.svg')}
+        contentFit="contain"
+      />
+      <TitleText>
+        Welcome, {user?.username}
+      </TitleText>
+      <SearchBar />
+      <BookmarksView />
+      <ExchangeBtn onPress={handleExchange} />
+    </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

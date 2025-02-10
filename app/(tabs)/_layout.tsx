@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
-
-import Colors from '@/constants/Colors';
+import { Tabs, usePathname, useRootNavigation } from 'expo-router';
 import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { BookmarksProvider } from '@/contexts/BookmarksContext';
+import { CoinsProvider } from '@/contexts/CoinsContext';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
@@ -17,41 +14,54 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const pathname = usePathname();
+  const rootNavigation = useRootNavigation();
+
+  useEffect(() => {
+    if (rootNavigation?.isReady()) {
+      // @ts-ignore - accessing internal state for debugging
+      const routes = rootNavigation.getState().routeNames;
+      console.log('All registered routes:', routes);
+    }
+  }, [rootNavigation?.isReady()]);
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: useClientOnlyValue(false, true),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    <BookmarksProvider>
+      <CoinsProvider>
+        <Tabs
+          screenOptions={{
+            tabBarActiveTintColor: '#23EBC3',
+            tabBarLabelStyle: {
+              fontFamily: 'DMSans-Medium',
+              fontSize: 12,
+              lineHeight: 16,
+              letterSpacing: -0.3,
+            },
+            tabBarInactiveTintColor: '#8E8E93',
+            headerShown: false,
+          }}>
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: 'Home',
+              tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="two"
+            options={{
+              title: 'Account',
+              tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+            }}
+          />
+          <Tabs.Screen
+            name="crypto"
+            options={{
+              href: null,
+            }}
+          />
+        </Tabs>
+      </CoinsProvider>
+    </BookmarksProvider>
   );
 }

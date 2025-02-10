@@ -20,30 +20,38 @@ interface PinSetupFormProps {
 
 export default function PinSetupForm({ onPinConfirm }: PinSetupFormProps) {
   const [pin, setPin] = useState<string>('');
-  const { setValue } = useFormContext();
+  const { setValue, trigger } = useFormContext();
 
-  const handleNumberPress = (num: string) => {
+  const handleNumberPress = async (num: string) => {
     if (pin.length < 4) {
       const newPin = pin + num;
       setPin(newPin);
-      setValue('pin', newPin, { shouldValidate: true });
+      setValue('pin', newPin);
+
+      // Validate immediately if we've reached 4 digits
+      if (newPin.length === 4) {
+        await trigger('pin');
+      }
     }
   };
 
   const handleBackspace = () => {
     const newPin = pin.slice(0, -1);
     setPin(newPin);
-    setValue('pin', newPin, { shouldValidate: true });
+    setValue('pin', newPin);
   };
 
   const handleReset = () => {
     setPin('');
-    setValue('pin', '', { shouldValidate: true });
+    setValue('pin', '');
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (pin.length === 4) {
-      onPinConfirm?.(pin);
+      const isValid = await trigger('pin');
+      if (isValid) {
+        onPinConfirm?.(pin);
+      }
     }
   };
 

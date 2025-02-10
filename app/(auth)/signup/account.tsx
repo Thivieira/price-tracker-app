@@ -3,51 +3,56 @@ import { useSignupWizard } from '@/contexts/SignupWizardContext'
 import { useRouter, useLocalSearchParams } from 'expo-router'
 import { View } from 'react-native'
 import AccountForm from '@/components/signup/account-form'
-import { useEffect, useMemo } from 'react'
-import { useWatch } from 'react-hook-form'
+import { useEffect } from 'react'
+import { UseFormSetError } from 'react-hook-form'
+
+interface AccountFormData {
+  password: string;
+  password_confirmation: string;
+  username: string;
+  phone: string;
+}
+
+const validatePasswords = (
+  password: string,
+  passwordConfirmation: string,
+  setError: UseFormSetError<AccountFormData>
+): boolean => {
+  if (password && passwordConfirmation && password !== passwordConfirmation) {
+    setError('password_confirmation', { message: 'Passwords do not match' });
+    return false;
+  }
+  return true;
+}
 
 export default function Account() {
   const router = useRouter();
   const { methods: { control, trigger, getValues, setValue, setError } } = useSignupWizard();
   const { phone } = useLocalSearchParams<{ phone: string }>();
 
-  // Watch password fields for changes
-  const password = useWatch({ control, name: 'password' });
-  const passwordConfirmation = useWatch({ control, name: 'password_confirmation' });
-
-
-  // Validate passwords when either field changes
+  // Set phone number from URL params
   useEffect(() => {
-    if (password && passwordConfirmation && password !== passwordConfirmation) {
-      setError('password_confirmation', { message: 'Passwords do not match' });
-    }
-  }, [password, passwordConfirmation, setError]);
+    if (phone) setValue('phone', phone);
+  }, [phone, setValue]);
 
-  useEffect(() => {
-    setValue('phone', phone);
-  }, [phone]);
-
+  // Handle form submission
   const handleNext = async () => {
-    // Check if passwords match first
-    const currentPassword = getValues('password');
-    const currentConfirmation = getValues('password_confirmation');
+    const formData = getValues();
 
-    if (currentPassword !== currentConfirmation) {
-      setError('password_confirmation', { message: 'Passwords do not match' });
+    // Validate passwords
+    if (!validatePasswords(formData.password, formData.password_confirmation, setError)) {
       return;
     }
 
+    // Validate required fields
     const isValid = await trigger(['username', 'password', 'password_confirmation'], {
       shouldFocus: true
     });
 
-    if (!isValid) {
-      return;
+    if (isValid) {
+      router.push('/signup/personal-information');
     }
-
-    router.push('/signup/personal-information');
   };
-
 
   return (
     <SignUpPersonalInformationContainer>
@@ -55,10 +60,7 @@ export default function Account() {
         Account Details
       </SignUpPersonalInformationTitle>
       <AccountForm />
-      <View style={{
-        alignSelf: 'flex-end',
-        marginTop: 24
-      }}>
+      <View style={{ alignSelf: 'flex-end', marginTop: 24 }}>
         <SignUpFormNextButton onPress={handleNext} />
       </View>
     </SignUpPersonalInformationContainer>

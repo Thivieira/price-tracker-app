@@ -17,40 +17,54 @@ export default function PinSetup() {
   const { signUp } = useAuth();
 
   const handlePinConfirm = async (pin: string) => {
-    const isValid = await trigger('pin');
-    if (!isValid) return;
-    const formData = getValues();
-
     try {
+      const isValid = await trigger('pin');
+      if (!isValid) return;
+
+      const formData = getValues();
+
+      // Validate required fields before submission
+      const requiredFields = [
+        'username', 'firstName', 'lastName', 'phone',
+        'password', 'birthDate', 'streetAddress', 'city',
+        'region', 'zipCode'
+      ];
+
+      const missingFields = requiredFields.filter(field => !formData[field]);
+      if (missingFields.length > 0) {
+        Toast.show({
+          type: 'error',
+          text1: 'Missing Information',
+          text2: `Please fill in all required fields: ${missingFields.join(', ')}`
+        });
+        return;
+      }
+
       const signupData = {
         username: formData.username,
         first_name: formData.firstName,
         last_name: formData.lastName,
-        // email: formData.email,
         phone: formData.phone,
         password: formData.password,
         password_confirmation: formData.password,
         birthdate: formData.birthDate,
         street_address: formData.streetAddress,
-        unit_number: formData.complement,
+        unit_number: formData.complement || '',
         city: formData.city,
-
         region: formData.region,
         zip_code: formData.zipCode,
         raw_pin: pin
-      }
+      };
 
       await signUp(signupData);
-      console.log("FORM VALUES", formData);
-      router.push('/(tabs)');
+      router.replace('/(tabs)');
 
     } catch (error) {
-      console.error('Error during signup:', error);
-      console.log("FORM VALUES", formData);
+      console.error('Signup error:', error);
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Failed to complete signup. Please try again.'
+        text1: 'Signup Failed',
+        text2: error instanceof Error ? error.message : 'An unexpected error occurred'
       });
     }
   };
