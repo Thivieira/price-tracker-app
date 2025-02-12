@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { api } from './AuthContext';
+import { useCurrency } from './CurrencyContext';
 
 // Define the coin structure
 
@@ -32,6 +33,7 @@ export function CoinsProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
+  const { currency } = useCurrency();
 
   const searchCoins = useCallback((query: string) => {
     if (!query.trim()) {
@@ -39,10 +41,10 @@ export function CoinsProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const searchTerm = query.toLowerCase().trim();
+    const searchTerm = query?.toLowerCase().trim();
     const filtered = coins.filter(coin =>
-      coin.name.toLowerCase().includes(searchTerm) ||
-      coin.symbol.toLowerCase().includes(searchTerm)
+      coin.name?.toLowerCase().includes(searchTerm) ||
+      coin.symbol?.toLowerCase().includes(searchTerm)
     );
 
     setFilteredCoins(filtered);
@@ -54,13 +56,15 @@ export function CoinsProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       setError(null);
-      const withSearch = search ? '?search=' + search : '';
-      const response = await api.get('/coins' + withSearch);
+      const response = await api.get('/coins', {
+        params: {
+          vs_currency: currency,
+          search: search
+        }
+      });
+
       if (response.status !== 200) throw new Error('Failed to fetch coins');
       const data = response.data.data;
-
-
-
 
       setCoins(data);
       setFilteredCoins(data);
@@ -80,8 +84,8 @@ export function CoinsProvider({ children }: { children: React.ReactNode }) {
 
 
   const refreshCoins = useCallback(async () => {
-    await fetchCoins();
-  }, [fetchCoins]);
+    await fetchCoins(search);
+  }, [fetchCoins, search]);
 
   return (
     <CoinsContext.Provider

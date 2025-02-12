@@ -3,11 +3,14 @@ import { useCoins } from "@/contexts/CoinsContext";
 import { SearchBarContainer, SearchIcon, SearchInput, SearchInputContainer } from "./styles/search-bar.styles";
 
 export default function SearchBar() {
-  const { searchCoins, search } = useCoins();
+  const { searchCoins, search, setSearch } = useCoins();
 
   const handleSearch = (text: string) => {
+    setSearch(text);
     searchCoins(text);
-    router.push(`/crypto?search=${text}`);
+    if (text) {
+      router.push(`/crypto?search=${text}`);
+    }
   }
 
   return (

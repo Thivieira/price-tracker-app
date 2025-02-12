@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { OnboardingProvider } from '../contexts/OnboardingContext';
 import { AuthProvider } from '../contexts/AuthContext';
+import { CurrencyProvider } from '../contexts/CurrencyContext';
 import {
   DMSans_400Regular,
   DMSans_500Medium,
@@ -36,15 +37,17 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <OnboardingProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)/signin" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="reset-to-root" options={{ headerShown: false }} />
-        </Stack>
-        <Toast config={toastConfig} />
+        <CurrencyProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)/signup" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)/signin" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="reset-to-root" options={{ headerShown: false }} />
+          </Stack>
+          <Toast config={toastConfig} />
+        </CurrencyProvider>
       </OnboardingProvider>
     </AuthProvider>
   );

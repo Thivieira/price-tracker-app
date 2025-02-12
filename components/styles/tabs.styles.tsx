@@ -44,6 +44,26 @@ color: #fff;
 margin-top: 100px;
 `
 
+export const CryptoPagetTitleContainer = styled(View)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 60px;
+  width: 100%;
+`;
+
+export const CryptoPageTitleText = styled(TitleText)`
+font-family: 'DMSans-Bold';
+font-style: normal;
+font-weight: 700;
+font-size: 24px;
+line-height: 34px;
+text-align: center;
+letter-spacing: -0.8px;
+color: #12033A;
+`
+
 export const DescriptionText = styled(Text)`
 position: relative;
 top: 20px;

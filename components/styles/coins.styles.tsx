@@ -79,25 +79,43 @@ export const CoinEmptyState = () => {
 
 export const CoinContainer = styled.View`
   width: 100%;
-  height: 88px;
+  height: 80px;
   background-color: #F1F3FA;
   border-radius: 12px;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 30px;
+`;
+
+export const CoinImageContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 `;
 
 
 export const CoinImage = styled(Image)`
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
 `;
 
 
 export const CoinName = styled.Text`
-  font-family: 'DMSans-Medium';
+  font-family: 'DMSans-Bold';
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 20px;
   line-height: 24px;
+`;
+
+export const CoinPrice = styled.Text`
+font-family: 'DMSans-Regular';
+font-style: normal;
+font-weight: 400;
+font-size: 18px;
+line-height: 20px;
+text-align: right;
+color: #12033A;
 `;

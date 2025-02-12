@@ -5,8 +5,8 @@ import PhoneInput, {
 
 
 import { Control, Controller, RegisterOptions } from 'react-hook-form';
-import { PhoneInputContainer, phoneInputStyles } from './international-phone-input.styles';
-import { modalStyles } from './international-phone-input.styles';
+import { PhoneInputContainer, phoneInputStyles } from './styles/international-phone-input.styles';
+import { modalStyles } from './styles/international-phone-input.styles';
 import { Image } from 'expo-image';
 import styled from 'styled-components/native';
 

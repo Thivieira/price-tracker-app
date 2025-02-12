@@ -1,31 +1,56 @@
-import { StyleSheet } from 'react-native';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { styled } from 'styled-components/native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+const Container = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Title = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+`;
+
+const Separator = styled.View`
+  height: 1px;
+  width: 80%;
+`;
+
+const Text = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+`;
+
+const ChangeCurrencyButton = styled.TouchableOpacity`
+  background-color: #000;
+  padding: 10px;
+  border-radius: 5px;
+`;
+
+const ChangeCurrencyButtonText = styled.Text`
+  color: #ffffff;
+`;
+
+
+
 
 export default function TabTwoScreen() {
+  const { currency, setCurrency } = useCurrency();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
-    </View>
+    <Container>
+      <Title>Tab Two</Title>
+      <Separator lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text>{currency}</Text>
+      <ChangeCurrencyButton onPress={() => setCurrency('BRL')}>
+        <ChangeCurrencyButtonText>Change Currency</ChangeCurrencyButtonText>
+      </ChangeCurrencyButton>
+      {/* <SelectCurrencyContainer>
+        <SelectCurrencyButton onPress={() => setCurrency('BRL')}>
+          <Text>BRL</Text>
+        </SelectCurrencyButton>
+      </SelectCurrencyContainer> */}
+      {/* <EditScreenInfo path="app/(tabs)/two.tsx" /> */}
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

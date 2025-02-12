@@ -13,7 +13,7 @@ export default function CoinListView() {
         <CoinEmptyState />
       ) : (
         limitedCoins.map((coin) => (
-          <Coin key={coin.id} coin={coin} />
+          <Coin key={coin.symbol} coin={coin} />
         ))
       )}
     </CoinListContainer>
