@@ -1,5 +1,5 @@
 import SearchBar from '@/components/search-bar';
-import { BackgroundImage, ExchangeBtn, ScreenContainer, TitleText } from '@/components/styles/tabs.styles';
+import { BackgroundImage, CryptoScreenSpacer, ExchangeBtn, ScreenContainer, TitleText } from '@/components/styles/tabs.styles';
 import BookmarksView from '@/components/bookmarks-view';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -19,8 +19,9 @@ export default function TabOneScreen() {
       <TitleText>
         Welcome, {user?.username}
       </TitleText>
+      <CryptoScreenSpacer />
       <SearchBar />
-      <BookmarksView />
+      <BookmarksView limitView={true} />
       <ExchangeBtn onPress={handleExchange} />
     </ScreenContainer>
   );

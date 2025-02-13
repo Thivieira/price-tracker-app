@@ -3,7 +3,6 @@ import styled from 'styled-components/native';
 
 export const SearchBarContainer = styled.View`
   position: relative;
-  margin-top: 75px;
   align-items: center;
   position: relative;
   width: 100%;

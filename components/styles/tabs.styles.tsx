@@ -44,25 +44,23 @@ color: #fff;
 margin-top: 100px;
 `
 
-export const CryptoPagetTitleContainer = styled(View)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 60px;
+export const CryptoPageTitleContainer = styled.View`
   width: 100%;
+  height: 100px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
 `;
 
-export const CryptoPageTitleText = styled(TitleText)`
-font-family: 'DMSans-Bold';
-font-style: normal;
-font-weight: 700;
-font-size: 24px;
-line-height: 34px;
-text-align: center;
-letter-spacing: -0.8px;
-color: #12033A;
-`
+export const CryptoPageTitleText = styled.Text`
+  font-family: 'DMSans-Bold';
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
+  letter-spacing: -0.4px;
+  color: #12033A;
+`;
 
 export const DescriptionText = styled(Text)`
 position: relative;
@@ -86,7 +84,14 @@ position: absolute;
 `
 
 
-
+export const CryptoScreenSpacer = styled(View)`
+  position: relative;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  padding: 0 24px;
+   margin-top: 75px;
+`
 
 
 interface ExchangeBtnProps {

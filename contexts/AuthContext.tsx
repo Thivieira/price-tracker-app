@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import axios from 'axios';
+import { Toast } from 'react-native-toast-message';
 
 export interface User {
   id: number
@@ -94,9 +95,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
+        console.log('Interceptor caught error:', {
+          status: error.response?.status,
+          url: originalRequest.url,
+          isRetry: originalRequest._retry
+        });
+
         if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/refresh') {
           originalRequest._retry = true;
           try {
+            console.log('Attempting token refresh...');
             const refreshToken = await AsyncStorage.getItem('refreshToken');
             const response = await api.post(
               '/auth/refresh',
@@ -107,14 +115,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 },
               }
             );
-            const { accessToken: newAccessToken } = response.data;
-            await AsyncStorage.setItem('accessToken', newAccessToken);
+            console.log('Refresh successful, updating tokens...');
+            const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
+
+            // Store new tokens
+            await Promise.all([
+              AsyncStorage.setItem('accessToken', newAccessToken),
+              AsyncStorage.setItem('refreshToken', newRefreshToken),
+            ]);
+
+            // Update state with new tokens
+            setState(prev => ({
+              ...prev,
+              accessToken: newAccessToken,
+              refreshToken: newRefreshToken
+            }));
+
+            // Update axios headers
             api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
             originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+
             return api(originalRequest);
           } catch (refreshError) {
-            // If refresh fails, clear auth data and redirect
-            await clearAuthAndRedirect();
+            console.log('Refresh failed:', refreshError);
+            // Only redirect if refresh token is invalid/expired
+            if (refreshError.response?.status === 401) {
+              await clearAuthAndRedirect();
+            }
             return Promise.reject(refreshError);
           }
         }
@@ -344,7 +371,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       router.replace('/(tabs)');
       return true;
     } catch (error) {
-      console.error('PIN verification error:', error);
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        await clearAuthAndRedirect();
+        Toast.show({
+          type: 'error',
+          text1: 'Session Expired',
+          text2: 'Please sign in again'
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid PIN',
+          text2: 'Please try again'
+        });
+      }
       return false;
     }
   };

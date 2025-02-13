@@ -22,6 +22,7 @@ type CoinsContextType = {
   searchCoins: (query: string) => void;
   search: string;
   setSearch: (query: string) => void;
+  fetchCoin: (symbol: string) => Promise<Coin>;
 };
 
 
@@ -36,56 +37,54 @@ export function CoinsProvider({ children }: { children: React.ReactNode }) {
   const { currency } = useCurrency();
 
   const searchCoins = useCallback((query: string) => {
-    if (!query.trim()) {
-      setFilteredCoins(coins);
-      return;
-    }
+    setSearch(query); // This will trigger the fetchCoins effect
+  }, []);
 
-    const searchTerm = query?.toLowerCase().trim();
-    const filtered = coins.filter(coin =>
-      coin.name?.toLowerCase().includes(searchTerm) ||
-      coin.symbol?.toLowerCase().includes(searchTerm)
-    );
-
-    setFilteredCoins(filtered);
-    setSearch(query);
-  }, [coins]);
-
-
-  const fetchCoins = useCallback(async (search: string) => {
+  const fetchCoins = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
       const response = await api.get('/coins', {
         params: {
           vs_currency: currency,
-          search: search
+          search: search // Keep the search parameter for API filtering
         }
       });
 
       if (response.status !== 200) throw new Error('Failed to fetch coins');
       const data = response.data.data;
 
+      // Additional client-side filtering if needed
+      const searchTerm = search?.toLowerCase().trim();
+      const filtered = searchTerm
+        ? data.filter(coin =>
+          coin.name?.toLowerCase().includes(searchTerm) ||
+          coin.symbol?.toLowerCase().includes(searchTerm)
+        )
+        : data;
+
       setCoins(data);
-      setFilteredCoins(data);
-
-
+      setFilteredCoins(filtered);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to fetch coins');
       console.error('Error fetching coins:', error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [currency, search]); // Include search in dependencies
 
   useEffect(() => {
-    fetchCoins(search);
-  }, [fetchCoins, search]);
-
+    fetchCoins();
+  }, [fetchCoins, currency, search]);
 
   const refreshCoins = useCallback(async () => {
-    await fetchCoins(search);
-  }, [fetchCoins, search]);
+    await fetchCoins();
+  }, [fetchCoins]);
+
+  const fetchCoin = useCallback(async (symbol: string) => {
+    const response = await api.get(`/coins/${symbol}?vs_currency=${currency}&shouldFetch=true`);
+    return response.data;
+  }, [currency]);
 
   return (
     <CoinsContext.Provider
@@ -98,10 +97,10 @@ export function CoinsProvider({ children }: { children: React.ReactNode }) {
         searchCoins,
         search,
         setSearch,
+        fetchCoin,
       }}
     >
       {children}
-
     </CoinsContext.Provider>
   );
 }

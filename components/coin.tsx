@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { CoinContainer, CoinImageContainer, CoinImage, CoinName, CoinPrice } from "./styles/coins.styles"
 import { useCurrency } from "@/contexts/CurrencyContext";
+import Color from 'color';
+import { router } from "expo-router";
+import { useFormattedPrice } from "@/hooks/useFormattedPrice";
 
 export type Coin = {
   id: number;
@@ -25,24 +28,39 @@ const currencyConfig = {
   },
 };
 
-export const Coin = ({ coin }: { coin: Coin }) => {
+const adjustColorBrightness = (color: string): string => {
+  try {
+    const colorObj = Color(color);
+    const brightness = colorObj.luminosity();
+
+    // If color is too bright (luminosity > 0.7), darken it
+    if (brightness > 0.7) {
+      return colorObj.darken(0.5).hex();
+    }
+
+    return color;
+  } catch (e) {
+    // Fallback to default color if parsing fails
+    return '#000';
+  }
+};
+
+export const Coin = ({ coin, isEven }: { coin: Coin; isEven: boolean }) => {
   const { currency } = useCurrency();
 
-  const price = useMemo(() => {
-    const config = currencyConfig[currency];
-    const currentPrice = coin.current_price ?? 0;
-    return currentPrice.toLocaleString(config.locale, {
-      style: 'currency',
-      currency: config.currency,
-      minimumFractionDigits: 2,
-    });
-  }, [coin.current_price, currency]);
+  const adjustedColor = useMemo(() => {
+    return adjustColorBrightness(coin.dominant_color);
+  }, [coin.dominant_color]);
+
+  const price = useFormattedPrice(coin.current_price, currency);
 
   return (
-    <CoinContainer>
+    <CoinContainer isEven={isEven} onPress={() => {
+      router.push(`/crypto/${coin.symbol}`);
+    }}>
       <CoinImageContainer>
         <CoinImage source={coin.image_url ? { uri: coin.image_url } : require('@/assets/images/generic-cryptocurrency.svg')} />
-        <CoinName style={{ color: coin.dominant_color }}>
+        <CoinName style={{ color: adjustedColor }}>
           {coin.symbol ? coin.symbol.toUpperCase() : ''}
         </CoinName>
       </CoinImageContainer>

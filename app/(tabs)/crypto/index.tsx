@@ -1,15 +1,14 @@
 import SearchBar from '@/components/search-bar';
-import { ScreenContainer, CryptoPageTitleText, CryptoPageTitleContainer } from '@/components/styles/tabs.styles';
+import { ScreenContainer, CryptoPageTitleText, CryptoPageTitleContainer, Spacer, CryptoScreenSpacer } from '@/components/styles/tabs.styles';
 import CoinList from '@/components/coin-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { useCoins } from '@/contexts/CoinsContext';
-import { ProgressBarContainer } from '@/components/styles/common.styles';
 import { GoBackButton } from '@/components/styles/signup.styles';
 
 export default function CryptoIndex() {
   const { search } = useLocalSearchParams();
-  const { searchCoins } = useCoins();
+  const { searchCoins, setSearch } = useCoins();
 
   useEffect(() => {
     if (typeof search === 'string') {
@@ -20,7 +19,10 @@ export default function CryptoIndex() {
   return (
     <ScreenContainer>
       <CryptoPageTitleContainer>
-        <GoBackButton onPress={() => router.back()} />
+        <GoBackButton onPress={() => {
+          setSearch('')
+          router.back()
+        }} />
         <CryptoPageTitleText>
           Search for a coin
         </CryptoPageTitleText>

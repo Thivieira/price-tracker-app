@@ -15,7 +15,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     loadStoredCurrency();
-  }, []);
+  }, [currency]);
 
   const loadStoredCurrency = async () => {
     try {

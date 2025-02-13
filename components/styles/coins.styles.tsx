@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 import { Image } from 'expo-image';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 
 
 export const CoinListMainContainer = styled(View)`
@@ -43,20 +43,47 @@ color: #23EBC3;
 `;
 
 export const CoinListContainer = styled(View)`
-  flex: 2;
-
-  flex-direction: row;
+    flex-direction: column;
   flex-wrap: wrap;
-  gap: 12px;
   padding: 16px 0;
 `;
 
 export const CoinEmptyStateContainer = styled.View`
   width: 100%;
-  height: 120px;
+  height: 80px;
+  background-color: rgba(241, 243, 250, 0.5);
   border-radius: 12px;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
+  padding: 30px;
+`;
+
+export const CoinEmptyStateLeft = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const CoinEmptyStateCircle = styled.View`
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  background-color: rgba(18, 3, 58, 0.1);
+`;
+
+export const CoinEmptyStateSymbol = styled.View`
+  width: 60px;
+  height: 24px;
+  border-radius: 6px;
+  background-color: rgba(18, 3, 58, 0.1);
+`;
+
+export const CoinEmptyStatePrice = styled.View`
+  width: 80px;
+  height: 20px;
+  border-radius: 6px;
+  background-color: rgba(18, 3, 58, 0.1);
 `;
 
 export const CoinEmptyStateText = styled.Text`
@@ -71,16 +98,20 @@ export const CoinEmptyStateText = styled.Text`
 export const CoinEmptyState = () => {
   return (
     <CoinEmptyStateContainer>
-      <CoinEmptyStateText>No Coin yet, add some to get started</CoinEmptyStateText>
+      <CoinEmptyStateLeft>
+        <CoinEmptyStateCircle />
+        <CoinEmptyStateSymbol />
+      </CoinEmptyStateLeft>
+      <CoinEmptyStatePrice />
     </CoinEmptyStateContainer>
   )
 }
 
 
-export const CoinContainer = styled.View`
+export const CoinContainer = styled.TouchableOpacity<{ isEven: boolean }>`
   width: 100%;
   height: 80px;
-  background-color: #F1F3FA;
+  background-color: ${props => props.isEven ? '#F1F3FA' : '#FFFFFF'};
   border-radius: 12px;
   flex-direction: row;
   justify-content: space-between;
