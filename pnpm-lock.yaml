@@ -86,6 +86,9 @@ importers:
       react-native-international-phone-number:
         specifier: ^0.8.6
         version: 0.8.6(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
+      react-native-parallax-scroll-view:
+        specifier: ^0.21.3
+        version: 0.21.3
       react-native-progress:
         specifier: ^5.0.1
         version: 5.0.1(react-native-svg@15.11.1(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))
@@ -95,9 +98,6 @@ importers:
       react-native-screens:
         specifier: ~4.4.0
         version: 4.4.0(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
-      react-native-scroll-into-view:
-        specifier: ^2.0.2
-        version: 2.0.2(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
       react-native-toast-message:
         specifier: ^2.2.1
         version: 2.2.1(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
@@ -3872,6 +3872,9 @@ packages:
       react: '>=18.2.0'
       react-native: '>=0.73.0'
 
+  react-native-parallax-scroll-view@0.21.3:
+    resolution: {integrity: sha512-oVbZPijNGYGcpU2z7k/ZOOnl0vYxch7qtVvaJpH4+wLVnEP49NC2diCzjFGz8PE0yEcgyeTdkpdUK8RTD3QEew==}
+
   react-native-progress@5.0.1:
     resolution: {integrity: sha512-TYfJ4auAe5vubDma2yfFvt7ktSI+UCfysqJnkdHEcLXqAitRFOozgF/cLgN5VNi/iLdaf3ga1ETi2RF4jVZ/+g==}
     peerDependencies:
@@ -3892,12 +3895,6 @@ packages:
 
   react-native-screens@4.4.0:
     resolution: {integrity: sha512-c7zc7Zwjty6/pGyuuvh9gK3YBYqHPOxrhXfG1lF4gHlojQSmIx2piNbNaV+Uykj+RDTmFXK0e/hA+fucw/Qozg==}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
-
-  react-native-scroll-into-view@2.0.2:
-    resolution: {integrity: sha512-oTS2d0AjR8/ppH6YsD3MCj9vlf9+v+JUuLQcMx20IWu3NEMWheNNV13D6HmcJVdmM8WXpAXrTTDwymkD2I2EZg==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -9627,6 +9624,10 @@ snapshots:
       react: 18.3.1
       react-native: 0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1)
 
+  react-native-parallax-scroll-view@0.21.3:
+    dependencies:
+      prop-types: 15.8.1
+
   react-native-progress@5.0.1(react-native-svg@15.11.1(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)):
     dependencies:
       prop-types: 15.8.1
@@ -9662,12 +9663,6 @@ snapshots:
       react-freeze: 1.0.4(react@18.3.1)
       react-native: 0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1)
       warn-once: 0.1.1
-
-  react-native-scroll-into-view@2.0.2(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1):
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.3.1
-      react-native: 0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1)
 
   react-native-svg@15.11.1(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1):
     dependencies:
