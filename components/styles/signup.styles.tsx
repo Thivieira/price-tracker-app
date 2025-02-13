@@ -31,18 +31,19 @@ export const SignUpPhoneVerificationContainer = styled(SignUpIndexContainer)`
   background-color: #fff;
 `;
 
-export const GoBackButton = ({ onPress }: { onPress: () => void }) => {
+export const GoBackButton = ({ onPress, tintColor }: { onPress: () => void, tintColor?: string }) => {
   const GoBackButtonTouchable = styled(TouchableOpacity)`
     position: absolute;
     top: 45px;
     left: 24px;
+    
   `;
 
   return (
     <GoBackButtonTouchable onPress={onPress}>
       <Image
         source={require("@/assets/images/arrow-left.svg")}
-        style={{ width: 14, height: 14 }}
+        style={{ width: 14, height: 14, tintColor: tintColor }}
         contentFit="contain"
         alt="Go back"
       />

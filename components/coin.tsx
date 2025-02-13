@@ -6,27 +6,20 @@ import { router } from "expo-router";
 import { useFormattedPrice } from "@/hooks/useFormattedPrice";
 
 export type Coin = {
-  id: number;
+  ath: { price: number, timestamp: string };
+  atl: { price: number, timestamp: string };
+  current_price: number;
+  dominant_color: string;
+  high_24h: number;
+  high_7d: number;
+  id: string;
   image_url: string;
+  low_24h: number;
+  low_7d: number;
+  market_cap: number;
   name: string;
   symbol: string;
-  dominant_color: string;
-  current_price: number;
-  updated_at: string;
-  created_at: string;
-  deleted_at: string | null;
 }
-
-const currencyConfig = {
-  USD: {
-    locale: 'en-US',
-    currency: 'USD',
-  },
-  BRL: {
-    locale: 'pt-BR',
-    currency: 'BRL',
-  },
-};
 
 const adjustColorBrightness = (color: string): string => {
   try {

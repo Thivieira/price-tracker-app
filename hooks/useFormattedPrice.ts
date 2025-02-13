@@ -18,7 +18,17 @@ export function useFormattedPrice(price: number | null | undefined, currency: Su
     const config = currencyConfig[currency];
     const currentPrice = price ?? 0;
 
-    // For small numbers (less than 0.01), use a different formatting
+    // For very small numbers (less than 0.0001), use scientific notation
+    if (currentPrice < 0.0001) {
+      return currentPrice.toLocaleString(config.locale, {
+        style: 'currency',
+        currency: config.currency,
+        minimumSignificantDigits: 1,
+        maximumSignificantDigits: 4
+      });
+    }
+
+    // For small numbers (less than 0.01), use 4 decimal places
     if (currentPrice < 0.01) {
       return currentPrice.toLocaleString(config.locale, {
         style: 'currency',

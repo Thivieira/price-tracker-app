@@ -36,7 +36,7 @@
           "backgroundColor": "#232323",
           "image": "./assets/images/splash-icon.png",
           "dark": {
-            "image": "./assets/images/splash-icon-dark.png",
+            "image": "./assets/images/splash-icon.png",
             "backgroundColor": "#000000"
           },
           "imageWidth": 200
@@ -47,16 +47,10 @@
         "expo-font",
         {
           "fonts": [
-            "../assets/fonts/DMSans_Regular.ttf",
-            "../assets/fonts/DMSans_Medium.ttf",
-            "../assets/fonts/DMSans_Bold.ttf",
             "node_modules/@expo-google-fonts/dm-sans/DMSans_400Regular.ttf",
             "node_modules/@expo-google-fonts/dm-sans/DMSans_500Medium.ttf",
             "node_modules/@expo-google-fonts/dm-sans/DMSans_700Bold.ttf",
-            "node_modules/react-native-international-phone-number/lib/assets/fonts/TwemojiMozilla.woff2",
-            "@expo-google-fonts/dm-sans/DMSans_400Regular.ttf",
-            "@expo-google-fonts/dm-sans/DMSans_500Medium.ttf",
-            "@expo-google-fonts/dm-sans/DMSans_700Bold.ttf"
+            "node_modules/react-native-international-phone-number/lib/assets/fonts/TwemojiMozilla.woff2"
           ]
         }
       ]

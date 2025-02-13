@@ -1,5 +1,5 @@
 import SearchBar from '@/components/search-bar';
-import { ScreenContainer, CryptoPageTitleText, CryptoPageTitleContainer, Spacer, CryptoScreenSpacer } from '@/components/styles/tabs.styles';
+import { ScreenContainer, CryptoPageTitleText, CryptoPageTitleContainer } from '@/components/styles/tabs.styles';
 import CoinList from '@/components/coin-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
@@ -20,8 +20,8 @@ export default function CryptoIndex() {
     <ScreenContainer>
       <CryptoPageTitleContainer>
         <GoBackButton onPress={() => {
-          setSearch('')
-          router.back()
+          setSearch('');
+          router.back();
         }} />
         <CryptoPageTitleText>
           Search for a coin

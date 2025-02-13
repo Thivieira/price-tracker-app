@@ -9,14 +9,17 @@ export default function SearchBar() {
     setSearch(text);
     searchCoins(text);
     if (text) {
-      router.push(`/crypto?search=${text}`);
+      router.push(`/(tabs)/crypto?search=${text}`);
     }
   }
 
   return (
     <SearchBarContainer>
       <SearchInputContainer>
-        <SearchIcon source={require("@/assets/images/search-normal.svg")} tintColor="#c4c3d4" />
+        <SearchIcon
+          source={require("@/assets/images/search-normal.svg")}
+          style={{ tintColor: "#c4c3d4" }}
+        />
         <SearchInput
           placeholder="Search"
           placeholderTextColor="#9893ad"
