@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 const ErrorText = styled.Text`
-  position: absolute;
-  bottom: 0;
+  position: relative;
+  top: 70px;
   left: 4px;
   font-family: 'DMSans-Regular';
   font-size: 12px;

@@ -41,7 +41,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   verifyPin: (pin: string) => Promise<boolean>;
   // setupPin: (pin: string) => Promise<void>;
-  sendOtp: (phone: string) => Promise<boolean>;
+  sendOtp: (phone: string) => Promise<{ success: boolean; message: string }>;
   resendOtp: (phone: string) => Promise<{ success: boolean; message: string }>;
   verifyOtp: (phone: string, otp: string) => Promise<boolean>;
 }
@@ -229,6 +229,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (formData: any) => {
     try {
+      console.log('Signing up with form data:', formData);
       const response = await api.post('/auth/register', formData);
 
       // Check if response exists and has a status code
@@ -404,13 +405,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   //   }
   // };
 
-  const sendOtp = async (phone: string) => {
+  const sendOtp = async (phone: string): Promise<{ success: boolean; message: string }> => {
     try {
       await api.post('/auth/otp', { phone });
-      return true;
+      return { success: true, message: 'OTP sent successfully.' };
     } catch (error) {
       console.error('OTP sending error:', error);
-      return false;
+      if (axios.isAxiosError(error)) {
+        return {
+          success: false,
+          message: error.response?.data?.message ?? 'Failed to send OTP.'
+        };
+      }
+      return { success: false, message: 'An unexpected error occurred.' };
     }
   }
 

@@ -2,13 +2,12 @@ import styled from 'styled-components/native';
 import Animated from 'react-native-reanimated';
 
 export const Container = styled.View<{ hasError?: boolean }>`
-  height: ${props => props.hasError ? '120px' : '64px'};
-  flex: none;
-  flex-grow: 0;
+  height: ${props => props.hasError ? '80px' : '64px'};
   margin: 8px 0;
 `;
 
 export const InputContainer = styled.View<{ isFocused: boolean; hasError?: boolean }>`
+  height: 64px;
   position: absolute;
   left: 0;
   right: 0;
@@ -28,7 +27,6 @@ export const InputContainer = styled.View<{ isFocused: boolean; hasError?: boole
 `;
 
 export const StyledInput = styled.TextInput`
-  flex: 1;
   padding-top: 20px;
   padding-left: 20px;
   font-family: 'DMSans-Medium';

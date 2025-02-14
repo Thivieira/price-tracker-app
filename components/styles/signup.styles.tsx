@@ -254,13 +254,7 @@ export const SignUpPersonalInformationSubtitle = styled(Text)`
 export const SignUpPersonalInformationFormContainer = styled(View)`
   background-color: #fff;
   padding: 24px;
-  flex-shrink: 1;
 `;
-
-interface SignUpFormNextButtonProps {
-  onPress: () => void;
-  isLoading?: boolean;
-}
 
 export const SignUpFormNextButton = ({ onPress, isLoading = false }: SignUpFormNextButtonProps) => {
   const SignUpFormNextButtonContainer = styled(TouchableOpacity)`
