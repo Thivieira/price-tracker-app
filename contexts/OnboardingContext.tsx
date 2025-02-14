@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type OnboardingContextType = {
   isOnboardingComplete: boolean;
   setOnboardingComplete: (value: boolean) => Promise<void>;
+  clearOnboardingStatus: () => Promise<void>;
   isLoading: boolean;
 };
 
@@ -37,11 +38,21 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
+  const clearOnboardingStatus = async () => {
+    try {
+      await AsyncStorage.removeItem('onboardingComplete');
+      setIsOnboardingComplete(false);
+    } catch (error) {
+      console.error('Error clearing onboarding status:', error);
+    }
+  };
+
   return (
     <OnboardingContext.Provider
       value={{
         isOnboardingComplete,
         setOnboardingComplete,
+        clearOnboardingStatus,
         isLoading,
       }}
     >

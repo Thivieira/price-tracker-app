@@ -25,7 +25,7 @@ export default function PinSetup() {
 
       // Validate required fields before submission
       const requiredFields = [
-        'username', 'firstName', 'lastName', 'phone',
+        'username', 'firstName', 'lastName',
         'password', 'birthDate', 'streetAddress', 'city',
         'region', 'zipCode'
       ];
@@ -55,6 +55,8 @@ export default function PinSetup() {
         zip_code: formData.zipCode,
         raw_pin: pin
       };
+
+      console.log(signupData, 'signupData');
 
       await signUp(signupData);
       router.replace('/(tabs)');

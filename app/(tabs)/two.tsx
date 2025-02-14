@@ -1,6 +1,8 @@
 import CurrencyPicker from '@/components/currency-picker';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { useOnboarding } from '@/contexts/OnboardingContext';
+import Toast from 'react-native-toast-message';
 import { styled } from 'styled-components/native';
 
 export const Container = styled.View`
@@ -11,7 +13,7 @@ export const Container = styled.View`
 
 export const ContentContainer = styled.View`
   flex: 1;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 `;
 
@@ -25,6 +27,8 @@ export const Title = styled.Text`
   letter-spacing: -1px;
   color: #12033A;
   margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
 `;
 
 export const Separator = styled.View`
@@ -32,6 +36,7 @@ export const Separator = styled.View`
   width: 80%;
   background-color: rgba(18, 3, 58, 0.1);
   margin: 20px 0;
+  align-self: center;
 `;
 
 export const CurrencyText = styled.Text`
@@ -53,6 +58,8 @@ export const LogoutButton = styled.TouchableOpacity`
   margin-top: 20px;
   align-items: center;
   justify-content: center;
+  align-self: center;
+  margin-top: 50px;
 `;
 
 export const LogoutButtonText = styled.Text`
@@ -66,9 +73,24 @@ export const LogoutButtonText = styled.Text`
   color: #FFFFFF;
 `;
 
+export const ConfirmButton = styled.TouchableOpacity<{ active: boolean }>`
+  padding: 16px 32px;
+  border-radius: 8px;
+  align-items: center;
+  background-color: ${props => props.active ? 'rgba(35, 235, 195, 0.3)' : 'rgba(35, 235, 195, 0.1)'};
+`;
+
+export const ConfirmButtonText = styled.Text`
+  color: #323232;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+
 export default function TabTwoScreen() {
   const { currency } = useCurrency();
   const { signOut } = useAuth();
+  const { isOnboardingComplete, clearOnboardingStatus } = useOnboarding();
 
   const handleLogout = () => {
     signOut();
@@ -81,6 +103,16 @@ export default function TabTwoScreen() {
         <Separator />
         <CurrencyText>Current Currency: {currency}</CurrencyText>
         <CurrencyPicker />
+        <CurrencyText>Onboarding Status: {isOnboardingComplete ? 'Complete' : 'Incomplete'}</CurrencyText>
+        <ConfirmButton active={true} onPress={() => {
+          clearOnboardingStatus();
+          Toast.show({
+            text1: 'Onboarding status cleared',
+            type: 'success',
+          });
+        }}>
+          <ConfirmButtonText>Allow Onboarding</ConfirmButtonText>
+        </ConfirmButton>
         <LogoutButton onPress={handleLogout}>
           <LogoutButtonText>Logout</LogoutButtonText>
         </LogoutButton>
