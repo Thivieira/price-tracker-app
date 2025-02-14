@@ -76,8 +76,6 @@ export default function CryptoScreen() {
 
   const UPPERCASE_SYMBOL = symbol?.toString().toUpperCase();
 
-  console.log("coin", coin)
-
   const handleExchange = () => {
     router.push('/(tabs)/exchange?from=' + symbol + '&to=' + 'BTC');
   };

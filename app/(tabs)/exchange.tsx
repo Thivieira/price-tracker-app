@@ -1,5 +1,5 @@
-import { useState, useCallback, Fragment } from 'react';
-import { router } from 'expo-router';
+import { useState, useCallback, Fragment, useEffect } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
 import { View, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { GoBackButton } from '@/components/styles/signup.styles';
@@ -32,6 +32,7 @@ interface Coin {
 }
 
 export default function ExchangeScreen() {
+  const { from, to } = useLocalSearchParams();
   const [fromCoin, setFromCoin] = useState<Coin | null>(null);
   const [toCoin, setToCoin] = useState<Coin | null>(null);
   const [amount, setAmount] = useState('');
@@ -45,6 +46,22 @@ export default function ExchangeScreen() {
 
   const fromFormattedPrice = useFormattedPrice(fromCoin?.current_price, currency);
   const toFormattedPrice = useFormattedPrice(toCoin?.current_price, currency);
+
+  useEffect(() => {
+    if (from && coins) {
+      const initialFromCoin = coins.find(
+        (coin) => coin.symbol.toLowerCase() === from.toString().toLowerCase()
+      );
+      if (initialFromCoin) setFromCoin(initialFromCoin);
+    }
+
+    if (to && coins) {
+      const initialToCoin = coins.find(
+        (coin) => coin.symbol.toLowerCase() === to.toString().toLowerCase()
+      );
+      if (initialToCoin) setToCoin(initialToCoin);
+    }
+  }, [from, to, coins]);
 
   const handleSwap = () => {
     const temp = fromCoin;
@@ -71,8 +88,6 @@ export default function ExchangeScreen() {
         amount: parseFloat(amount),
         vs_currency: currency
       });
-
-      console.log(response.data);
 
       if (!response.data || typeof response.data.data.toAmount !== 'number') {
         throw new Error('Invalid response format');

@@ -1,8 +1,6 @@
-import { Stack, usePathname } from 'expo-router';
+import { Stack } from 'expo-router';
 
 export default function CryptoLayout() {
-  const pathname = usePathname();
-  console.log('pathname in layout for crypto: ', pathname);
   return (
     <Stack>
       <Stack.Screen

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs, usePathname, useRootNavigation } from 'expo-router';
-import { useColorScheme } from '@/components/useColorScheme';
+import { Tabs, useRootNavigation } from 'expo-router';
 import { BookmarksProvider } from '@/contexts/BookmarksContext';
 import { CoinsProvider } from '@/contexts/CoinsContext';
 
@@ -13,8 +12,6 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const pathname = usePathname();
   const rootNavigation = useRootNavigation();
 
   useEffect(() => {

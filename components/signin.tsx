@@ -37,7 +37,6 @@ export default function SignInForm() {
 
 
   const onSubmit = async (data: FormData) => {
-    console.log(data);
     try {
       await signIn(data.username, data.password);
       router.replace('/pin-verification');

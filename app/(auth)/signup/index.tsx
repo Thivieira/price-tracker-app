@@ -10,7 +10,6 @@ export default function SignUpPhone() {
   const handleNext = async (phone: string) => {
     try {
       const response = await sendOtp(phone);
-      console.log(response, 'response');
       router.push({
         pathname: '/(auth)/signup/phone-verification',
 
