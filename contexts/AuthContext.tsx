@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Use replace instead of push to prevent navigation stack issues
-    router.replace('/(auth)/signin');
+    router.replace('/');
   };
 
   // Update the interceptor to use the new clearAuthAndRedirect

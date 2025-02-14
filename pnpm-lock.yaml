@@ -89,9 +89,6 @@ importers:
       react-native-international-phone-number:
         specifier: ^0.8.6
         version: 0.8.6(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)
-      react-native-parallax-scroll-view:
-        specifier: ^0.21.3
-        version: 0.21.3
       react-native-progress:
         specifier: ^5.0.1
         version: 5.0.1(react-native-svg@15.11.1(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1))
@@ -4021,9 +4018,6 @@ packages:
     peerDependencies:
       react: '>=18.2.0'
       react-native: '>=0.73.0'
-
-  react-native-parallax-scroll-view@0.21.3:
-    resolution: {integrity: sha512-oVbZPijNGYGcpU2z7k/ZOOnl0vYxch7qtVvaJpH4+wLVnEP49NC2diCzjFGz8PE0yEcgyeTdkpdUK8RTD3QEew==}
 
   react-native-progress@5.0.1:
     resolution: {integrity: sha512-TYfJ4auAe5vubDma2yfFvt7ktSI+UCfysqJnkdHEcLXqAitRFOozgF/cLgN5VNi/iLdaf3ga1ETi2RF4jVZ/+g==}
@@ -9930,10 +9924,6 @@ snapshots:
     dependencies:
       react: 18.3.1
       react-native: 0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1)
-
-  react-native-parallax-scroll-view@0.21.3:
-    dependencies:
-      prop-types: 15.8.1
 
   react-native-progress@5.0.1(react-native-svg@15.11.1(react-native@0.76.7(@babel/core@7.26.7)(@babel/preset-env@7.26.7(@babel/core@7.26.7))(@types/react@18.3.18)(react@18.3.1))(react@18.3.1)):
     dependencies:

@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Coin } from '@/components/coin';
 import Toast from 'react-native-toast-message';
+import { useCurrency } from '@/contexts/CurrencyContext';
+import { api } from './AuthContext';
 
 type BookmarksContextType = {
   bookmarks: Coin[];
@@ -14,10 +16,58 @@ const BookmarksContext = createContext<BookmarksContextType | undefined>(undefin
 
 export function BookmarksProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, setBookmarks] = useState<Coin[]>([]);
+  const { currency } = useCurrency();
 
   useEffect(() => {
     getBookmarksFromStorage();
   }, []);
+
+  useEffect(() => {
+    if (bookmarks.length > 0) {
+      updateBookmarkPrices();
+    }
+  }, [currency]);
+
+  const updateBookmarkPrices = useCallback(async () => {
+    try {
+      const symbols = bookmarks.map(b => b.symbol);
+
+      const promises = symbols.map(symbol =>
+        api.get(`/coins/${symbol}`, {
+          params: {
+            vs_currency: currency,
+            shouldFetch: true
+          }
+        })
+      );
+
+      const responses = await Promise.all(promises);
+      const updatedCoins = responses.map(response => response.data.data);
+
+      const updatedBookmarks = bookmarks.map(bookmark => {
+        const updatedCoin = updatedCoins.find(coin => coin.symbol === bookmark.symbol);
+        if (updatedCoin) {
+          return {
+            ...bookmark,
+            current_price: updatedCoin.current_price,
+            market_cap: updatedCoin.market_cap,
+            high_24h: updatedCoin.high_24h,
+            low_24h: updatedCoin.low_24h,
+            high_7d: updatedCoin.high_7d,
+            low_7d: updatedCoin.low_7d,
+            ath: updatedCoin.ath,
+            atl: updatedCoin.atl
+          };
+        }
+        return bookmark;
+      });
+
+      setBookmarks(updatedBookmarks);
+      await AsyncStorage.setItem('bookmarksComplete', JSON.stringify(updatedBookmarks));
+    } catch (error) {
+      console.error('Error updating bookmark prices:', error);
+    }
+  }, [bookmarks, currency]);
 
   const getBookmarksFromStorage = useCallback(async () => {
     try {
@@ -25,11 +75,14 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
       if (value) {
         const parsedBookmarks = JSON.parse(value) as Coin[];
         setBookmarks(parsedBookmarks);
+        if (parsedBookmarks.length > 0) {
+          updateBookmarkPrices();
+        }
       }
     } catch (error) {
       console.error('Error checking bookmarks status:', error);
     }
-  }, []);
+  }, [updateBookmarkPrices]);
 
   const addBookmark = useCallback(async (coin: Coin) => {
     try {

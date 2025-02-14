@@ -60,6 +60,12 @@ export default function TabLayout() {
               href: null,
             }}
           />
+          <Tabs.Screen
+            name="exchange"
+            options={{
+              href: null,
+            }}
+          />
         </Tabs>
       </CoinsProvider>
     </BookmarksProvider>

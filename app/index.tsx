@@ -15,13 +15,18 @@ export default function Page() {
   }
 
   useEffect(() => {
-    // if already logged in, go to tabs
-    // router.replace('/(tabs)');
-
-    // utility to clear onboarding complete
-    // setOnboardingComplete(false);
+    const checkAuthStatus = async () => {
+      try {
+        const isAuthenticated = false;
+        if (isAuthenticated) {
+          router.replace('/(tabs)');
+        }
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+      }
+    };
+    checkAuthStatus();
   }, []);
-
 
   return (
     <BackgroundContainer>

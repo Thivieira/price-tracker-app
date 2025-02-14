@@ -1,17 +1,18 @@
 import styled from 'styled-components/native';
-import { Image } from 'expo-image';
 import { View } from 'react-native';
 
 export const BookmarksContainer = styled.View`
   position: relative;
-  margin-top: 24px;
   flex-direction: column;
   align-items: center;
-  padding: 0 12px;
   position: relative;
   width: 100%;
   justify-content: center;
-  padding: 0 24px;
+`;
+
+export const BookmarksContainerSpacer = styled.View`
+  margin-top: 20px;
+  height: 20px;
 `;
 
 
@@ -19,6 +20,7 @@ export const BookmarksTextContainer = styled.View`
   width: 100%;
   flex-direction: row;
   justify-content: space-between;
+  padding: 0 24px;
 `;
 
 

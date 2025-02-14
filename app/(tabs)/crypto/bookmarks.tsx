@@ -15,7 +15,7 @@ export default function BookmarksScreen() {
           Tokens
         </CryptoPageTitleText>
       </CryptoPageTitleContainer>
-      <BookmarksView />
+      <BookmarksView showHeader={false} />
     </ScreenContainer>
   );
 }

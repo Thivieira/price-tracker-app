@@ -90,7 +90,7 @@ export const CryptoScreenSpacer = styled(View)`
   position: relative;
   width: 100%;
   padding: 0 24px;
-   margin-top: 75px;
+   margin-top: ${props => props.marginTop || '75px'};
 `
 
 

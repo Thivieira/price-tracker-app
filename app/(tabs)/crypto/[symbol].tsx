@@ -79,8 +79,8 @@ export default function CryptoScreen() {
   console.log("coin", coin)
 
   const handleExchange = () => {
-    console.log('Exchange');
-  }
+    router.push('/(tabs)/exchange?from=' + symbol + '&to=' + 'BTC');
+  };
 
   const handleFavoritePress = async () => {
     try {
