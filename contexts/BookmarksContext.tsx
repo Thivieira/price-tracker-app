@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Coin } from '@/components/coin';
 import Toast from 'react-native-toast-message';
@@ -20,9 +20,9 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
   const { currency } = useCurrency();
   const { isLoggedIn, isPinVerified } = useAuth();
 
-  const updateBookmarkPrices = useCallback(async () => {
+  const updateBookmarkPrices = useCallback(async (currentBookmarks: Coin[]) => {
     try {
-      const symbols = bookmarks.map(b => b.symbol);
+      const symbols = currentBookmarks.map(b => b.symbol);
 
       const promises = symbols.map(symbol =>
         api.get(`/coins/${symbol}`, {
@@ -36,7 +36,7 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
       const responses = await Promise.all(promises);
       const updatedCoins = responses.map(response => response.data.data);
 
-      const updatedBookmarks = bookmarks.map(bookmark => {
+      const updatedBookmarks = currentBookmarks.map(bookmark => {
         const updatedCoin = updatedCoins.find(coin => coin.symbol === bookmark.symbol);
         if (updatedCoin) {
           return {
@@ -59,7 +59,7 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Error updating bookmark prices:', error);
     }
-  }, [bookmarks, currency]);
+  }, [currency]);
 
   const getBookmarksFromStorage = useCallback(async () => {
     try {
@@ -68,7 +68,7 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
         const parsedBookmarks = JSON.parse(value) as Coin[];
         setBookmarks(parsedBookmarks);
         if (parsedBookmarks.length > 0) {
-          updateBookmarkPrices();
+          updateBookmarkPrices(parsedBookmarks);
         }
       }
     } catch (error) {
@@ -126,11 +126,12 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
     return bookmarks.some(b => b.symbol === symbol);
   }, [bookmarks]);
 
-  useEffect(() => {
-    if (bookmarks.length > 0) {
-      updateBookmarkPrices();
-    }
-  }, [currency]);
+  const contextValue = useMemo(() => ({
+    bookmarks,
+    addBookmark,
+    removeBookmark,
+    isBookmarked,
+  }), [bookmarks, addBookmark, removeBookmark, isBookmarked]);
 
   useEffect(() => {
     if (isLoggedIn && isPinVerified) {
@@ -141,16 +142,8 @@ export function BookmarksProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isLoggedIn, isPinVerified, getBookmarksFromStorage]);
 
-
   return (
-    <BookmarksContext.Provider
-      value={{
-        bookmarks,
-        addBookmark,
-        removeBookmark,
-        isBookmarked,
-      }}
-    >
+    <BookmarksContext.Provider value={contextValue}>
       {children}
     </BookmarksContext.Provider>
   );

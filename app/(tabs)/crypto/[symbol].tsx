@@ -21,6 +21,7 @@ export default function CryptoScreen() {
   const { currency } = useCurrency();
   const { bookmarks, addBookmark, removeBookmark } = useBookmarks();
 
+  const mountedRef = useRef(true);
   const [coin, setCoin] = useState<Coin | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +29,11 @@ export default function CryptoScreen() {
   const UPPERCASE_SYMBOL = useMemo(() =>
     typeof symbol === 'string' ? symbol.toUpperCase() : '',
     [symbol]
+  );
+
+  const price = useMemo(() =>
+    formatPrice(coin?.current_price, currency),
+    [coin?.current_price, currency]
   );
 
   const isBookmarked = useMemo(() =>
@@ -45,62 +51,31 @@ export default function CryptoScreen() {
     }
   }, [coin, symbol, isBookmarked, removeBookmark, addBookmark]);
 
-  const price = useFormattedPrice(coin?.current_price, currency);
+  const loadCoin = useCallback(async () => {
+    if (!symbol) return;
 
-  const useDevLogging = () => {
-    const renderCount = useRef(0);
-
-    useEffect(() => {
-      if (!__DEV__) return;
-
-      renderCount.current += 1;
-      console.log('Render count:', renderCount.current, 'triggered by:', {
-        symbol,
-        coin,
-        currency,
-        isLoading,
-        error,
-        timestamp: new Date().toISOString()
-      });
-    }, [symbol, coin, currency, isLoading, error]);
-
-    useEffect(() => {
-      if (!__DEV__) return;
-      console.log('CryptoScreen mounted');
-      return () => console.log('CryptoScreen unmounted');
-    }, []);
-  };
-
-  if (__DEV__) {
-    useDevLogging();
-  }
+    try {
+      setIsLoading(true);
+      const response = await fetchCoin(symbol.toString());
+      if (mountedRef.current) {
+        setCoin(response.data);
+      }
+    } catch (err) {
+      if (mountedRef.current) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch coin');
+      }
+    } finally {
+      if (mountedRef.current) {
+        setIsLoading(false);
+      }
+    }
+  }, [symbol, fetchCoin]);
 
   useEffect(() => {
-    let mounted = true;
-
-    const loadCoin = async () => {
-      if (!symbol) return;
-
-      try {
-        setIsLoading(true);
-        const response = await fetchCoin(symbol.toString());
-        if (mounted) {
-          setCoin(response.data);
-        }
-      } catch (err) {
-        if (mounted) {
-          setError(err instanceof Error ? err.message : 'Failed to fetch coin');
-        }
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
+    mountedRef.current = true;
     loadCoin();
-    return () => { mounted = false; };
-  }, [symbol, fetchCoin]);
+    return () => { mountedRef.current = false; };
+  }, [loadCoin]);
 
   const handleExchange = useCallback(() => {
     if (symbol) {
@@ -108,47 +83,39 @@ export default function CryptoScreen() {
     }
   }, [symbol]);
 
-  const priceData = useMemo(() => ({
-    currentPrice: coin?.current_price,
-    sevenDaysLow: coin?.low_7d,
-    sevenDaysHigh: coin?.high_7d,
-    twentyFourHourLow: coin?.low_24h,
-    twentyFourHourHigh: coin?.high_24h,
-    athPrice: coin?.ath?.price,
-    atlPrice: coin?.atl?.price
-  }), [coin]);
-
   const textPriceData = useMemo(() => {
     if (!coin) return [];
+
+    // Destructure once for all usages
+    const {
+      current_price,
+      market_cap,
+      low_24h,
+      high_24h,
+      low_7d,
+      high_7d,
+      ath,
+      atl
+    } = coin;
+
     return [
-      {
-        label: "Price",
-        price: priceData.currentPrice ?? 0
-      },
-      {
-        label: "Market Cap",
-        price: coin.market_cap ?? 0
-      },
+      { label: "Price", price: current_price ?? 0 },
+      { label: "Market Cap", price: market_cap ?? 0 },
       {
         label: "24h Range",
-        price: `${formatPrice(priceData.twentyFourHourLow, currency)} - ${formatPrice(priceData.twentyFourHourHigh, currency)}`,
+        price: `${formatPrice(low_24h, currency)} - ${formatPrice(high_24h, currency)}`,
         removePriceFormat: true
       },
       {
         label: "7d Range",
-        price: `${formatPrice(priceData.sevenDaysLow, currency)} - ${formatPrice(priceData.sevenDaysHigh, currency)}`,
+        price: `${formatPrice(low_7d, currency)} - ${formatPrice(high_7d, currency)}`,
         removePriceFormat: true
       },
-      {
-        label: "All-Time High",
-        price: priceData.athPrice ?? 0
-      },
-      {
-        label: "All-Time Low",
-        price: priceData.atlPrice ?? 0
-      },
+      { label: "All-Time High", price: ath?.price ?? 0 },
+      { label: "All-Time Low", price: atl?.price ?? 0 },
     ];
-  }, [priceData, coin?.market_cap, currency]);
+  }, [coin, currency]);  // Only depend on coin and currency
+
 
   if (!symbol) {
     return (
@@ -211,4 +178,3 @@ export default function CryptoScreen() {
     </ScreenContainer>
   );
 }
-
