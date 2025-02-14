@@ -37,11 +37,14 @@ export default function TokenSelectModal({
       coin.symbol.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderCoin = ({ item }) => (
-    <CoinItem onPress={() => {
-      onSelect(item);
-      onClose();
-    }}>
+  const renderCoin = ({ item }: { item: any }) => (
+    <CoinItem
+      key={`${item.id}-${item.symbol}`}
+      onPress={() => {
+        onSelect(item);
+        onClose();
+      }}
+    >
       <Image
         source={{ uri: item.image_url }}
         style={{ width: 40, height: 40 }}
@@ -83,7 +86,7 @@ export default function TokenSelectModal({
               <FlatList
                 data={filteredCoins}
                 renderItem={renderCoin}
-                keyExtractor={item => item.id}
+                keyExtractor={item => `${item.id}-${item.symbol}`}
               />
             </ModalContainer>
           </TouchableWithoutFeedback>

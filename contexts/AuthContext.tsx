@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Use replace instead of push to prevent navigation stack issues
-    router.replace('/');
+    router.replace('/reset-to-root');
   };
 
   // Update the interceptor to use the new clearAuthAndRedirect
@@ -367,7 +367,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const verifyPin = async (pin: string) => {
     try {
       await api.post('/auth/verify-pin', { pin });
-      setState(prev => ({ ...prev, isPinVerified: true }));
+      setState(prev => ({
+        ...prev,
+        isPinVerified: true,
+        isLoggedIn: true // Ensure we maintain logged in state
+      }));
       router.replace('/(tabs)');
       return true;
     } catch (error) {

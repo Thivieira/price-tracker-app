@@ -14,38 +14,38 @@ const currencyConfig = {
 type SupportedCurrency = keyof typeof currencyConfig;
 
 export function useFormattedPrice(price: number | null | undefined, currency: SupportedCurrency) {
-  const formattedPrice = useMemo(() => {
-    const config = currencyConfig[currency];
-    const currentPrice = price ?? 0;
+  return useMemo(() => formatPrice(price, currency), [price, currency]);
+}
 
-    // For very small numbers (less than 0.0001), use scientific notation
-    if (currentPrice < 0.0001) {
-      return currentPrice.toLocaleString(config.locale, {
-        style: 'currency',
-        currency: config.currency,
-        minimumSignificantDigits: 1,
-        maximumSignificantDigits: 4
-      });
-    }
+export function formatPrice(price: number | null | undefined, currency: SupportedCurrency): string {
+  const config = currencyConfig[currency];
+  const currentPrice = price ?? 0;
 
-    // For small numbers (less than 0.01), use 4 decimal places
-    if (currentPrice < 0.01) {
-      return currentPrice.toLocaleString(config.locale, {
-        style: 'currency',
-        currency: config.currency,
-        minimumFractionDigits: 4,
-        maximumFractionDigits: 4
-      });
-    }
-
-    // For regular numbers, use standard 2 decimal places
+  // For very small numbers (less than 0.0001), use scientific notation
+  if (currentPrice < 0.0001) {
     return currentPrice.toLocaleString(config.locale, {
       style: 'currency',
       currency: config.currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      minimumSignificantDigits: 1,
+      maximumSignificantDigits: 4
     });
-  }, [price, currency]);
+  }
 
-  return formattedPrice;
-} 
+  // For small numbers (less than 0.01), use 4 decimal places
+  if (currentPrice < 0.01) {
+    return currentPrice.toLocaleString(config.locale, {
+      style: 'currency',
+      currency: config.currency,
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4
+    });
+  }
+
+  // For regular numbers, use standard 2 decimal places
+  return currentPrice.toLocaleString(config.locale, {
+    style: 'currency',
+    currency: config.currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}

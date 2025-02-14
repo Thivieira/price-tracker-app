@@ -26,7 +26,7 @@ export default function TabLayout() {
     <BookmarksProvider>
       <CoinsProvider>
         <Tabs
-          screenOptions={{
+          screenOptions={({ route, navigation }) => ({
             tabBarActiveTintColor: '#23EBC3',
             tabBarLabelStyle: {
               fontFamily: 'DMSans-Medium',
@@ -36,19 +36,37 @@ export default function TabLayout() {
             },
             tabBarInactiveTintColor: '#8E8E93',
             headerShown: false,
-          }}>
+            tabBarIcon: ({ color }) => {
+              const iconName = route.name === 'index' ? 'home' : 'user';
+              // Get the current route name
+              const currentRoute = navigation.getState().routes[navigation.getState().index].name;
+
+              // For the home icon
+              if (route.name === 'index') {
+                // Show as active if current route is not 'two'
+                return <TabBarIcon name={iconName} color={currentRoute !== 'two' ? '#23EBC3' : '#8E8E93'} />;
+              }
+
+              // For the account icon
+              if (route.name === 'two') {
+                // Show as active only when 'two' is selected
+                return <TabBarIcon name={iconName} color={currentRoute === 'two' ? '#23EBC3' : '#8E8E93'} />;
+              }
+
+              return <TabBarIcon name={iconName} color={color} />;
+            },
+          })}
+        >
           <Tabs.Screen
             name="index"
             options={{
               title: 'Home',
-              tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
             }}
           />
           <Tabs.Screen
             name="two"
             options={{
               title: 'Account',
-              tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
             }}
           />
           <Tabs.Screen

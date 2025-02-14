@@ -1,6 +1,6 @@
 import { PriceRowContainer, LabelContainer, Label, Price } from './styles/text-price.styles';
-import { useFormattedPrice } from '@/hooks/useFormattedPrice';
-import { useCurrency } from '@/contexts/CurrencyContext';
+import { PriceDisplay } from './price-display';
+import React from 'react';
 
 interface TextPriceProps {
   label: string;
@@ -10,22 +10,25 @@ interface TextPriceProps {
   isEven?: boolean;
 }
 
-export const TextPrice = ({
+export const TextPrice = React.memo(({
   label,
   price,
   approximateSymbol = false,
   removePriceFormat = false,
   isEven = false
 }: TextPriceProps) => {
-  const { currency } = useCurrency();
-  const formattedPrice = useFormattedPrice(price, currency);
-
   return (
     <PriceRowContainer isEven={isEven}>
       <LabelContainer>
         <Label>{label}</Label>
       </LabelContainer>
-      <Price>{approximateSymbol ? '≈ ' : ''}{removePriceFormat ? price : formattedPrice}</Price>
+      <Price>
+        <PriceDisplay
+          value={price}
+          approximateSymbol={approximateSymbol}
+          removePriceFormat={removePriceFormat}
+        />
+      </Price>
     </PriceRowContainer>
   );
-}; 
+}); 

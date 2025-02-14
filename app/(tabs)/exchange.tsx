@@ -22,6 +22,7 @@ import {
 import TokenSelectModal from '@/components/token-select-modal';
 import { api } from '@/contexts/AuthContext';
 import { useFormattedPrice } from '@/hooks/useFormattedPrice';
+import { useBookmarks } from '@/contexts/BookmarksContext';
 
 interface Coin {
   id: string;
@@ -39,35 +40,68 @@ export default function ExchangeScreen() {
   const [convertedAmount, setConvertedAmount] = useState('');
   const { currency } = useCurrency();
   const { coins } = useCoins();
+  const { bookmarks } = useBookmarks();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectingType, setSelectingType] = useState<'from' | 'to' | null>(null);
   const [isConverting, setIsConverting] = useState(false);
-  const [rate, setRate] = useState<number | null>(null);
 
   const fromFormattedPrice = useFormattedPrice(fromCoin?.current_price, currency);
   const toFormattedPrice = useFormattedPrice(toCoin?.current_price, currency);
 
   useEffect(() => {
-    if (from && coins) {
-      const initialFromCoin = coins.find(
-        (coin) => coin.symbol.toLowerCase() === from.toString().toLowerCase()
-      );
-      if (initialFromCoin) setFromCoin(initialFromCoin);
-    }
+    const fetchSpecificCoins = async () => {
+      try {
+        if (from) {
+          const fromSymbol = from.toString().toLowerCase();
+          // Check both coins and bookmarks
+          const existingFromCoin = [...coins, ...bookmarks].find(
+            (coin) => coin.symbol.toLowerCase() === fromSymbol
+          );
 
-    if (to && coins) {
-      const initialToCoin = coins.find(
-        (coin) => coin.symbol.toLowerCase() === to.toString().toLowerCase()
-      );
-      if (initialToCoin) setToCoin(initialToCoin);
-    }
-  }, [from, to, coins]);
+          if (!existingFromCoin) {
+            const response = await api.get(`/coins/${fromSymbol}`, {
+              params: { vs_currency: currency }
+            });
+            if (response.data?.data) {
+              setFromCoin(response.data.data);
+            }
+          } else {
+            setFromCoin(existingFromCoin);
+          }
+        }
+
+        if (to) {
+          const toSymbol = to.toString().toLowerCase();
+          // Check both coins and bookmarks
+          const existingToCoin = [...coins, ...bookmarks].find(
+            (coin) => coin.symbol.toLowerCase() === toSymbol
+          );
+
+          if (!existingToCoin) {
+            const response = await api.get(`/coins/${toSymbol}`, {
+              params: { vs_currency: currency }
+            });
+            if (response.data?.data) {
+              setToCoin(response.data.data);
+            }
+          } else {
+            setToCoin(existingToCoin);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching specific coins:', error);
+      }
+    };
+
+    fetchSpecificCoins();
+  }, [from, to, coins, bookmarks, currency]);
 
   const handleSwap = () => {
     const temp = fromCoin;
     setFromCoin(toCoin);
     setToCoin(temp);
     setConvertedAmount('');
+    setAmount('');
   };
 
   const handleConvert = useCallback(async () => {
@@ -93,7 +127,6 @@ export default function ExchangeScreen() {
         throw new Error('Invalid response format');
       }
 
-      setRate(response.data.data.toAmount);
       setConvertedAmount(response.data.data.toAmount.toFixed(8));
     } catch (error) {
       console.error('Conversion error:', error);
