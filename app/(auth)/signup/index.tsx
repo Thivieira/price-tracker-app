@@ -15,6 +15,7 @@ export default function SignUpPhone() {
       if (response.success) {
         router.push({
           pathname: '/(auth)/signup/phone-verification',
+          params: { phone }
         });
       } else {
         throw new Error(response.message);

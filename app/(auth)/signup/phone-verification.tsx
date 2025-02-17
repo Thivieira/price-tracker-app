@@ -3,12 +3,14 @@ import VerificationForm from '../../../components/signup/verification-form';
 import { SignUpPhoneVerificationContainer } from '@/components/styles/signup.styles';
 import { useAuth } from '@/contexts/AuthContext';
 import Toast from 'react-native-toast-message';
+import { useCallback } from 'react';
+
 export default function PhoneVerification() {
   const router = useRouter();
   const { phone } = useLocalSearchParams<{ phone: string }>();
   const { verifyOtp } = useAuth();
 
-  const handleNext = async (code: string) => {
+  const handleNext = useCallback(async (code: string) => {
     try {
       const isVerified = await verifyOtp(phone, code);
       if (isVerified) {
@@ -27,8 +29,8 @@ export default function PhoneVerification() {
         text1: 'OTP',
         text2: 'Invalid OTP.'
       });
-    };
-  }
+    }
+  }, [phone, verifyOtp]);
 
   return (
     <SignUpPhoneVerificationContainer>

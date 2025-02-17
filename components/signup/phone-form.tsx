@@ -85,7 +85,8 @@ export default function PhoneForm({ onNext }: PhoneFormProps) {
       const phoneNumber = parsePhoneNumberWithError(data.phoneNumber, {
         defaultCallingCode: callingCode
       });
-      onNext(phoneNumber?.format('E.164') || data.phoneNumber);
+      const phone = phoneNumber?.format('E.164') || data.phoneNumber;
+      onNext(phone);
     } catch (error) {
       onNext(data.phoneNumber);
     }

@@ -56,8 +56,6 @@ export default function PinSetup() {
         raw_pin: pin
       };
 
-      console.log(signupData, 'signupData');
-
       await signUp(signupData);
       router.replace('/(tabs)');
 

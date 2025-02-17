@@ -33,7 +33,7 @@ export default function Account() {
   // Set phone number from URL params
   useEffect(() => {
     if (phone) setValue('phone', phone);
-  }, [phone, setValue]);
+  }, [phone]);
 
   // Handle form submission
   const handleNext = async () => {
